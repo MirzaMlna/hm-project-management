@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerCategoriesController;
+use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Worker Types
     Route::resource('worker-categories', WorkerCategoriesController::class);
+    // Worker
+    Route::resource('workers', WorkerController::class);
 });
 
 require __DIR__ . '/auth.php';
