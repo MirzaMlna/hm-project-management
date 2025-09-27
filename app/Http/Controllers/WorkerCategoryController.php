@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WorkerCategories;
+use App\Models\WorkerCategory;
 use Illuminate\Http\Request;
 
-class WorkerCategoriesController extends Controller
+class WorkerCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = WorkerCategories::latest()->paginate(10);
+        $categories = WorkerCategory::latest()->paginate(10);
         return view('worker-categories.index', compact('categories'));
     }
 
@@ -30,7 +30,7 @@ class WorkerCategoriesController extends Controller
             'category' => 'required|string|max:255',
         ]);
 
-        WorkerCategories::create($validated);
+        WorkerCategory::create($validated);
 
         return redirect()->route('worker-categories.index')
             ->with('success', 'Kategori tukang berhasil ditambahkan.');
@@ -55,7 +55,7 @@ class WorkerCategoriesController extends Controller
             'category' => 'required|string|max:255',
         ]);
 
-        $category = WorkerCategories::findOrFail($id);
+        $category = WorkerCategory::findOrFail($id);
         $category->update($validated);
 
         return redirect()->route('worker-categories.index')
@@ -67,7 +67,7 @@ class WorkerCategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        $category = WorkerCategories::findOrFail($id);
+        $category = WorkerCategory::findOrFail($id);
         $category->delete();
 
         return redirect()->route('worker-categories.index')

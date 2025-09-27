@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\WorkerCategoriesController;
+use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Worker Types
-    Route::resource('worker-categories', WorkerCategoriesController::class);
+    Route::resource('worker-categories', WorkerCategoryController::class);
     // Worker management routes
     Route::post('/workers/{worker}/deactivate', [WorkerController::class, 'deactivate'])->name('workers.deactivate');
     Route::get('/workers/inactive', [WorkerController::class, 'inactive'])->name('workers.inactive');
