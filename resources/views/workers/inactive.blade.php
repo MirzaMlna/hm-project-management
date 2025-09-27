@@ -25,6 +25,7 @@
                         <thead class="bg-sky-800 text-white">
                             <tr>
                                 <th class="px-4 py-2">NO</th>
+                                <th class="px-4 py-2">KATEGORI</th>
                                 <th class="px-4 py-2">NAMA</th>
                                 <th class="px-4 py-2">KODE</th>
                                 <th class="px-4 py-2">CATATAN</th>
@@ -35,6 +36,8 @@
                             @forelse ($workers as $index => $worker)
                                 <tr>
                                     <td class="px-4 py-2">{{ $workers->firstItem() + $index }}</td>
+                                    <td class="px-4 py-2">{{ $worker->category ? $worker->category->category : '-' }}
+                                    </td>
                                     <td class="px-4 py-2">{{ $worker->name }}</td>
                                     <td class="px-4 py-2">{{ $worker->code }}</td>
                                     <td class="px-4 py-2 whitespace-pre-line">{{ $worker->note ?? '-' }}</td>

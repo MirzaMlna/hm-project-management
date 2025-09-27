@@ -38,7 +38,7 @@
                                             {{ $category->category }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{-- Kosong dulu --}}
+                                            {{ $category->workers_count }}
                                         </td>
                                         <td class="px-6 py-4 space-x-3">
                                             <button

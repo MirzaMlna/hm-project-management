@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('workers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('worker_category_id')->constrained('worker_categories')->cascadeOnDelete();
             $table->string('code', 10)->unique();
             $table->string('name', 100);
             $table->string('phone', 20)->nullable();
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
 
     public function down(): void
     {

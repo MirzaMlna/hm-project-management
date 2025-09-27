@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Worker;
+use App\Models\WorkerCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,21 +27,22 @@ class WorkerController extends Controller
 
     public function create()
     {
-        return view('workers.create');
+        $categories = WorkerCategory::all();
+        return view('workers.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            // 'code' => 'required|string|max:10|unique:workers',
-            'name'         => 'required|string|max:100',
-            'phone'        => 'nullable|string|max:20',
-            'birth_date'   => 'nullable|date',
-            'address'      => 'nullable|string',
-            'daily_salary' => 'nullable|numeric',
-            'is_active'    => 'nullable|boolean',
-            'note'         => 'nullable|string',
-            'photo'        => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'worker_category_id' => 'required|exists:worker_categories,id',
+            'name'              => 'required|string|max:100',
+            'phone'             => 'nullable|string|max:20',
+            'birth_date'        => 'nullable|date',
+            'address'           => 'nullable|string',
+            'daily_salary'      => 'nullable|numeric',
+            'is_active'         => 'nullable|boolean',
+            'note'              => 'nullable|string',
+            'photo'             => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         // Generate kode otomatis
@@ -73,22 +75,24 @@ class WorkerController extends Controller
 
     public function edit(Worker $worker)
     {
-        return view('workers.edit', compact('worker'));
+        $categories = WorkerCategory::all();
+        return view('workers.edit', compact('worker', 'categories'));
     }
 
     public function update(Request $request, Worker $worker)
     {
         $validated = $request->validate([
-            // 'code'         => 'required|string|max:10|unique:workers,code,' . $worker->id,
-            'name'         => 'required|string|max:100',
-            'phone'        => 'nullable|string|max:20',
-            'birth_date'   => 'nullable|date',
-            'address'      => 'nullable|string',
-            'daily_salary' => 'nullable|numeric',
-            'is_active'    => 'nullable|boolean',
-            'note'         => 'nullable|string',
-            'photo'        => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'worker_category_id' => 'required|exists:worker_categories,id',
+            'name'              => 'required|string|max:100',
+            'phone'             => 'nullable|string|max:20',
+            'birth_date'        => 'nullable|date',
+            'address'           => 'nullable|string',
+            'daily_salary'      => 'nullable|numeric',
+            'is_active'         => 'nullable|boolean',
+            'note'              => 'nullable|string',
+            'photo'             => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
+
 
         if ($request->hasFile('photo')) {
             // Hapus foto lama jika ada

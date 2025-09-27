@@ -22,6 +22,24 @@
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+                        {{-- Kategori Tukang --}}
+                        <div>
+                            <label>Kategori Tukang</label>
+                            <select name="worker_category_id"
+                                class="w-full border rounded p-2 @error('worker_category_id') border-red-500 @enderror"
+                                required>
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('worker_category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('worker_category_id')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         {{-- No. Telepon --}}
                         <div>

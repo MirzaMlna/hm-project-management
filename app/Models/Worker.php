@@ -10,6 +10,7 @@ class Worker extends Model
     use HasFactory;
 
     protected $fillable = [
+        'worker_category_id',
         'code',
         'name',
         'phone',
@@ -21,4 +22,9 @@ class Worker extends Model
         'is_active',
         'note',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(WorkerCategory::class, 'worker_category_id');
+    }
 }

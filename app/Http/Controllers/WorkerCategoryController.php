@@ -12,7 +12,7 @@ class WorkerCategoryController extends Controller
      */
     public function index()
     {
-        $categories = WorkerCategory::latest()->paginate(10);
+        $categories = WorkerCategory::withCount('workers')->get();
         return view('worker-categories.index', compact('categories'));
     }
 

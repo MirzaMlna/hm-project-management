@@ -18,6 +18,20 @@
                             <input type="text" name="name" value="{{ old('name', $worker->name) }}"
                                 class="w-full border rounded p-2">
                         </div>
+                        {{-- Kategori Tukang --}}
+                        <div>
+                            <label>Kategori Tukang</label>
+                            <select name="worker_category_id" class="w-full border rounded p-2" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('worker_category_id', $worker->worker_category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->category }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div>
                             <label>No. Telepon</label>
                             <input type="text" name="phone" value="{{ old('phone', $worker->phone) }}"
