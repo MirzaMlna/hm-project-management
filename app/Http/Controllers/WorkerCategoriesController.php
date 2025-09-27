@@ -19,10 +19,7 @@ class WorkerCategoriesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('worker-categories.create');
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -42,20 +39,12 @@ class WorkerCategoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        $category = WorkerCategories::findOrFail($id);
-        return view('worker-categories.show', compact('category'));
-    }
+    public function show(string $id) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $category = WorkerCategories::findOrFail($id);
-        return view('worker-categories.edit', compact('category'));
-    }
+    public function edit(string $id) {}
 
     /**
      * Update the specified resource in storage.
