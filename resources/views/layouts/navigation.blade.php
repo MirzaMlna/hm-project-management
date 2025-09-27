@@ -29,22 +29,14 @@
 
                             <x-slot name="content">
                                 <x-dropdown-link :href="route('worker-categories.index')">
-                                    Kategori Tukang
+                                    <i class="bi bi-list me-2"></i>Kategori Tukang
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('workers.index')">
-                                    Data Tukang
+                                    <i class="bi bi-people me-2"></i>Data Tukang
                                 </x-dropdown-link>
-
-                                <!-- Authentication -->
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-
-                                    <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                        {{ __('Log Out') }}
-                                    </x-dropdown-link>
-                                </form>
+                                <x-dropdown-link :href="route('workers.index')">
+                                    <i class="bi bi-qr-code-scan me-2 font-bold"></i> Scan QR Presensi
+                                </x-dropdown-link>
                             </x-slot>
                         </x-dropdown>
                     </div>
