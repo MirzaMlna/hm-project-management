@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex justify-end items-end">
                     <x-primary-button class="mt-6 me-6">
-                        Tambah Kategori Tukang
+                        <i class="bi bi-plus-circle me-2"></i>Tambah Kategori Tukang
                     </x-primary-button>
                 </div>
                 <div class="p-6 text-gray-900">
