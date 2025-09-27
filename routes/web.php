@@ -19,7 +19,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Worker Types
     Route::resource('worker-categories', WorkerCategoriesController::class);
-    // Worker
+    // Worker management routes
+    Route::post('/workers/{worker}/deactivate', [WorkerController::class, 'deactivate'])->name('workers.deactivate');
+    Route::get('/workers/inactive', [WorkerController::class, 'inactive'])->name('workers.inactive');
+    Route::post('/workers/{worker}/activate', [WorkerController::class, 'activate'])->name('workers.activate');
     Route::resource('workers', WorkerController::class);
 });
 
