@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
+use App\Http\Controllers\WorkerPresenceScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,7 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/workers/{worker}/activate', [WorkerController::class, 'activate'])->name('workers.activate');
     Route::resource('workers', WorkerController::class);
     // Worker Presence Schedule
-    Route::resource('worker-presence-schedules', \App\Http\Controllers\WorkerPresenceScheduleController::class);
+    Route::resource('worker-presence-schedules', WorkerPresenceScheduleController::class);
+    Route::get('presence-schedules', [WorkerPresenceScheduleController::class, 'index'])->name('presence-schedules.index');
+    Route::post('presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])->name('presence-schedules.save');
 });
 
 require __DIR__ . '/auth.php';
