@@ -19,11 +19,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // Worker Types
     Route::resource('worker-categories', WorkerCategoryController::class);
-    // Worker management routes
+    // Worker Management
     Route::post('/workers/{worker}/deactivate', [WorkerController::class, 'deactivate'])->name('workers.deactivate');
     Route::get('/workers/inactive', [WorkerController::class, 'inactive'])->name('workers.inactive');
     Route::post('/workers/{worker}/activate', [WorkerController::class, 'activate'])->name('workers.activate');
     Route::resource('workers', WorkerController::class);
+    // Worker Presence Schedule
+    Route::resource('worker-presence-schedules', \App\Http\Controllers\WorkerPresenceScheduleController::class);
 });
 
 require __DIR__ . '/auth.php';
