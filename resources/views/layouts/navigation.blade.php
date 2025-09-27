@@ -37,7 +37,7 @@
                                 <x-dropdown-link :href="route('worker-presence-schedules.index')">
                                     <i class="bi bi-clock me-2"></i> Jadwal Presensi
                                 </x-dropdown-link>
-                                <x-dropdown-link :href="route('workers.index')">
+                                <x-dropdown-link :href="route('worker-presences.index')">
                                     <i class="bi bi-qr-code-scan me-2"></i> Scan QR Presensi
                                 </x-dropdown-link>
                             </x-slot>

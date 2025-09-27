@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
+use App\Http\Controllers\WorkerPresenceController;
 use App\Http\Controllers\WorkerPresenceScheduleController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,8 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('workers', WorkerController::class);
     // Worker Presence Schedule
     Route::resource('worker-presence-schedules', WorkerPresenceScheduleController::class);
-    Route::get('presence-schedules', [WorkerPresenceScheduleController::class, 'index'])->name('presence-schedules.index');
-    Route::post('presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])->name('presence-schedules.save');
+    Route::get('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'index'])->name('worker-presence-schedules.index');
+    Route::post('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])->name('worker-presence-schedules.save');
+    // Worker Presence (Scan QR)
+    Route::resource('worker-presences', WorkerPresenceController::class);
 });
 
 require __DIR__ . '/auth.php';

@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Form Create / Edit --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -31,7 +31,7 @@
                     {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
                 </p>
 
-                <form id="timeSettingsForm" action="{{ route('presence-schedules.save') }}" method="POST"
+                <form id="timeSettingsForm" action="{{ route('worker-presence-schedules.save') }}" method="POST"
                     class="space-y-4">
                     @csrf
 
