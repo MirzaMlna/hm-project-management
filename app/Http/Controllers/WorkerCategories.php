@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class WorkerType extends Controller
+class WorkerCategories extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('worker-types.index');
+        return view('worker-categories.index');
     }
 
     /**

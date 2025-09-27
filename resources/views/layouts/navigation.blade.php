@@ -29,7 +29,7 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                <x-dropdown-link :href="route('worker-types.index')">
+                                <x-dropdown-link :href="route('worker-categories.index')">
                                     Kategori Tukang
                                 </x-dropdown-link>
 
