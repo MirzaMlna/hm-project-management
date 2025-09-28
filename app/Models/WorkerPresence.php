@@ -16,11 +16,11 @@ class WorkerPresence extends Model
         'date',
         'worker_presence_schedule_id',
         'first_check_in',
-        'first_check_in_type',
         'second_check_in',
-        'second_check_in_type',
         'check_out',
-        'check_out_type',
+        'is_come_earlier',
+        'is_work_longer',
+        'is_overtime',
     ];
 
     public function schedule()
