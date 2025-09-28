@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->unsignedBigInteger('worker_id');
-            $table->unsignedBigInteger('presence_schedule_id');
+            $table->unsignedBigInteger('worker_presence_schedule_id');
             $table->time('first_check_in')->nullable();
             $table->time('second_check_in')->nullable();
             $table->time('check_out')->nullable();
@@ -24,7 +24,8 @@ return new class extends Migration
             $table->boolean('is_overtime')->default(0);
 
             $table->foreign('worker_id')->references('id')->on('workers')->onDelete('cascade');
-            $table->foreign('presence_schedule_id')->references('id')->on('presence_schedules')->onDelete('cascade');
+            $table->unsignedBigInteger('worker_presence_schedule_id');
+            $table->foreign('worker_presence_schedule_id')->references('id')->on('worker_presence_schedules')->onDelete('cascade');
         });
     }
 

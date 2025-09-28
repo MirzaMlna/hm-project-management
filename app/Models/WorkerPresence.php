@@ -18,7 +18,7 @@ class WorkerPresence extends Model
         'first_check_in',
         'second_check_in',
         'check_out',
-        'is_come_earlier',
+        'is_work_earlier',
         'is_work_longer',
         'is_overtime',
     ];
