@@ -56,8 +56,14 @@
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold"><span><i class="bi bi-scan"></i></span> Hasil Scan</h3>
                     <div class="flex justify-end">
-                        <x-primary-button onclick="toggleQrModal()">
+                        <x-primary-button onclick="toggleQrModal()" class="mr-2">
                             <i class="bi bi-qr-code-scan mr-2"></i> Scan QR Code
+                        </x-primary-button>
+                        <x-primary-button onclick="" class="!bg-green-700 hover:!bg-green-600 mr-2">
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                        </x-primary-button>
+                        <x-primary-button onclick="" class="!bg-red-700 hover:!bg-red-600">
+                            <i class="bi bi-file-earmark-pdf"></i>
                         </x-primary-button>
                     </div>
                 </div>
@@ -210,21 +216,21 @@
                             title: data.message,
                             html: `
         ${data.worker ? `
-                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
-                                            <tr>
-                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
-                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
-                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
-                                            </tr>
-                                            <tr>
-                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
-                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
-                                            </tr>
-                                        </table>
-                                    ` : ''}
+                                                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+                                                                            <tr>
+                                                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    ` : ''}
         <br>
         <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
     `,
