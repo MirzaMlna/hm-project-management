@@ -9,21 +9,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             {{-- Form Create / Edit --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                {{-- Alert sukses/gagal --}}
                 @if (session('success'))
-                    <div class="bg-green-100 text-green-800 p-2 rounded mb-4">
-                        {{ session('success') }}
+                    <div class="mb-4 p-4 rounded bg-green-100 text-green-800 shadow-sm">
+                        ✅ {{ session('success') }}
                     </div>
                 @endif
-                @if ($errors->any())
-                    <div class="bg-red-100 text-red-800 p-2 rounded mb-4">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                @if (session('error'))
+                    <div class="mb-4 p-4 rounded bg-red-100 text-red-800  shadow-sm">
+                        ❌ {{ session('error') }}
                     </div>
                 @endif
-
                 <h3 class="font-semibold mb-2 flex items-center">
                     <i class="bi bi-clock-history mr-2"></i> Pengaturan Rentang Waktu Presensi
                 </h3>

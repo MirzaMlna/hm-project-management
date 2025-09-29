@@ -5,16 +5,29 @@
                 Tukang
             </h2>
             <a href="{{ route('workers.inactive') }}">
-                <x-primary-button>
-                    <span><i class="bi bi-person-slash me-2"></i></span>Tukang Nonaktif
+                <x-primary-button class="!bg-gray-500 hover:!bg-gray-600 !text-white">
+                    <span><i class="bi bi-person-slash me-2"></i></span>
+                    Tukang Nonaktif
                 </x-primary-button>
             </a>
+
 
         </div>
     </x-slot>
 
     <div class="py-6">
         <div class=" max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Alert sukses/gagal --}}
+            @if (session('success'))
+                <div class="mb-4 p-4 rounded bg-green-100 text-green-800 shadow-sm">
+                    ✅ {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="mb-4 p-4 rounded bg-red-100 text-red-800  shadow-sm">
+                    ❌ {{ session('error') }}
+                </div>
+            @endif
             <!-- Card Statistik -->
             <div class="mx-auto">
                 <!-- Enhanced Stat Cards -->
