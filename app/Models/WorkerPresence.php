@@ -9,27 +9,22 @@ class WorkerPresence extends Model
 {
     use HasFactory;
 
-    protected $table = 'presences';
+    // Tambahkan ini supaya Laravel pakai tabel yang benar
+    protected $table = 'worker_presences';
 
     protected $fillable = [
         'worker_id',
         'date',
-        'worker_presence_schedule_id',
         'first_check_in',
+        'is_work_earlier',
         'second_check_in',
         'check_out',
-        'is_work_earlier',
         'is_work_longer',
         'is_overtime',
     ];
 
-    public function schedule()
-    {
-        return $this->belongsTo(WorkerPresenceSchedule::class, 'worker_presence_schedule_id');
-    }
-
     public function worker()
     {
-        return $this->belongsTo(Worker::class, 'worker_id');
+        return $this->belongsTo(Worker::class);
     }
 }

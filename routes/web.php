@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])->name('worker-presence-schedules.save');
     // Worker Presence (Scan QR)
     Route::resource('worker-presences', WorkerPresenceController::class);
+    Route::get('/presences/verify/{hashId}', [WorkerPresenceController::class, 'verify'])
+        ->name('worker-presences.verify');
 });
 
 require __DIR__ . '/auth.php';

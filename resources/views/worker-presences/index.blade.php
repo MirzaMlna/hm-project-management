@@ -51,12 +51,10 @@
                 @endforeach
             </div>
 
-
-
             {{-- Tabel Presensi --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold"><span><i class="bi bi-scan"></i></span>Hasil Scan</h3>
+                    <h3 class="text-lg font-semibold"><span><i class="bi bi-scan"></i></span> Hasil Scan</h3>
                     <div class="flex justify-end">
                         <x-primary-button onclick="toggleQrModal()">
                             <i class="bi bi-qr-code-scan mr-2"></i> Scan QR Code
@@ -74,20 +72,68 @@
                                 <th class="p-2 text-center">Presensi 1</th>
                                 <th class="p-2 text-center">Presensi 2</th>
                                 <th class="p-2 text-center">Presensi Pulang</th>
+                                <th class="p-2 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-white text-center">
-                                <td class="p-2">1</td>
-                                <td class="p-2">Jawa</td>
-                                <td class="p-2">Budi</td>
-                                <td class="p-2">W001</td>
-                                <td class="p-2"><span class="font-bold text-lg">07:15</span><br> Datang Lebih Awal
-                                </td>
-                                <td class="p-2"><span class="font-bold text-lg">12:05</span><br> Tepat Waktu</td>
-                                <td class="p-2"><span class="font-bold text-lg">16:20</span><br> Pulang Lebih Lambat
-                                </td>
-                            </tr>
+                            @forelse($presences as $index => $presence)
+                                <tr class="text-center">
+                                    <td class="p-2">{{ $index + 1 }}</td>
+                                    <td class="p-2">{{ $presence->worker->category->category ?? '-' }}</td>
+                                    <td class="p-2">{{ $presence->worker->name }}</td>
+                                    <td class="p-2">{{ $presence->worker->code }}</td>
+                                    <td class="p-2">
+                                        @if ($presence->first_check_in)
+                                            <span
+                                                class="font-bold text-lg">{{ \Carbon\Carbon::parse($presence->first_check_in)->format('H:i') }}</span><br>
+                                            {{ $presence->is_work_earlier ? 'Datang Lebih Awal' : 'Tepat Waktu' }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="p-2">
+                                        @if ($presence->second_check_in)
+                                            <span
+                                                class="font-bold text-lg">{{ \Carbon\Carbon::parse($presence->second_check_in)->format('H:i') }}</span><br>
+                                            Tepat Waktu
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="p-2">
+                                        @if ($presence->check_out)
+                                            <span
+                                                class="font-bold text-lg">{{ \Carbon\Carbon::parse($presence->check_out)->format('H:i') }}</span><br>
+                                            @if ($presence->is_overtime)
+                                                Lembur Malam
+                                            @elseif($presence->is_work_longer)
+                                                Pulang Lebih Lambat
+                                            @else
+                                                Tepat Waktu
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="p-2">
+                                        <form action="{{ route('worker-presences.destroy', $presence->id) }}"
+                                            method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                onclick="return confirm('Yakin ingin menghapus presensi ini?')">
+                                                <i class="bi bi-trash3 text-red-500"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="p-4 text-gray-500 text-center">Belum ada presensi hari
+                                        ini.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -109,28 +155,16 @@
     </div>
 
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // QR Modal Toggle
+        // Toggle Modal QR
         function toggleQrModal() {
             document.getElementById("qrModal").classList.toggle("hidden");
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            if (document.getElementById("qr-reader")) {
-                new Html5QrcodeScanner("qr-reader", {
-                    fps: 10,
-                    qrbox: 250
-                }).render((decodedText) => {
-                    alert("QR Terdeteksi: " + decodedText);
-                    toggleQrModal();
-                });
-            }
-        });
         // Jam & Tanggal Sekarang
         function updateDateTime() {
             const now = new Date();
-
-            // Format tanggal (contoh: 27 September 2025)
             const options = {
                 weekday: 'long',
                 year: 'numeric',
@@ -138,12 +172,97 @@
                 day: 'numeric'
             };
             document.getElementById("current-date").innerText = now.toLocaleDateString('id-ID', options);
-
-            // Format waktu (HH:mm:ss)
             document.getElementById("current-time").innerText = now.toLocaleTimeString('id-ID');
         }
-
         setInterval(updateDateTime, 1000);
         updateDateTime();
+
+        // Inisialisasi QR Scanner
+        document.addEventListener("DOMContentLoaded", () => {
+            const qrReader = document.getElementById("qr-reader");
+            if (!qrReader) return;
+
+            new Html5QrcodeScanner("qr-reader", {
+                fps: 10,
+                qrbox: 250
+            }).render((decodedText) => {
+                // decodedText = hashId dari QR
+                fetch(`/presences/verify/${decodedText}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let html = "";
+
+                        if (data.worker) {
+                            html = `
+                            <div class="text-left mt-2">
+                                <p><b>Nama:</b> ${data.worker.name}</p>
+                                <p><b>Kode:</b> ${data.worker.code}</p>
+                                <p><b>Kategori:</b> ${data.worker.category}</p>
+                            </div>
+                        `;
+                        }
+
+                        // Timer hitung mundur 5 detik
+                        let timerInterval;
+                        Swal.fire({
+                            icon: data.status === 'success' ? 'success' : data.status ===
+                                'error' ? 'error' : 'info',
+                            title: data.message,
+                            html: `
+        ${data.worker ? `
+                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+                                            <tr>
+                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+                                            </tr>
+                                        </table>
+                                    ` : ''}
+        <br>
+        <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
+    `,
+                            timer: 5000,
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                const timerSpan = Swal.getHtmlContainer().querySelector(
+                                    '#swal-timer');
+                                let timeLeft = 5;
+                                timerInterval = setInterval(() => {
+                                    timeLeft--;
+                                    if (timeLeft >= 0) timerSpan.textContent =
+                                        timeLeft;
+                                }, 1000);
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval);
+                            }
+                        });
+
+
+                        toggleQrModal();
+
+                        // Auto reload setelah 5 detik jika success
+                        if (data.status === 'success') {
+                            setTimeout(() => location.reload(), 5000);
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal memproses presensi'
+                        });
+                    });
+            });
+        });
     </script>
+
+
 </x-app-layout>
