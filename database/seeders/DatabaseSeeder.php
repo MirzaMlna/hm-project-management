@@ -3,17 +3,31 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Worker;
+use App\Models\WorkerCategory;
+use App\Models\WorkerPresence;
+use App\Models\WorkerPresenceSchedule;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call(UserSeeder::class);
-        $this->call(WorkerPresenceScheduleSeeder::class);
+
+        // buat kategori fix
+        $categories = ['Tukang Jawa', 'Tukang Banjar'];
+        foreach ($categories as $category) {
+            WorkerCategory::factory()->create(['category' => $category]);
+        }
+
+        // pekerja random 10 orang
+        Worker::factory(10)->create();
+
+        // jadwal default (1 data aja)
+        WorkerPresenceSchedule::factory()->create();
+
+        // dummy presensi 30 data
+        WorkerPresence::factory(30)->create();
     }
 }
