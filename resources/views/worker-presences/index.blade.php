@@ -59,9 +59,10 @@
                         <x-primary-button onclick="toggleQrModal()" class="mr-2">
                             <i class="bi bi-qr-code-scan mr-2"></i> Scan QR Code
                         </x-primary-button>
-                        <x-primary-button onclick="" class="!bg-green-700 hover:!bg-green-600 mr-2">
+                        <x-primary-button onclick="toggleExcelModal()" class="!bg-green-700 hover:!bg-green-600 mr-2">
                             <i class="bi bi-file-earmark-spreadsheet"></i>
                         </x-primary-button>
+
                         <x-primary-button onclick="" class="!bg-red-700 hover:!bg-red-600">
                             <i class="bi bi-file-earmark-pdf"></i>
                         </x-primary-button>
@@ -148,6 +149,52 @@
         </div>
     </div>
 
+    {{-- Modal Export Excel --}}
+    <div id="excelModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+            <button onclick="toggleExcelModal()"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
+            <h3 class="text-lg font-semibold mb-4">Export Presensi ke Excel</h3>
+
+            <form id="export-form" method="POST" action="{{ route('worker-presences.export') }}">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">Tanggal Mulai</label>
+                        <input type="date" name="date_from" id="date_from"
+                            value="{{ old('date_from', \Carbon\Carbon::today()->subDays(6)->toDateString()) }}"
+                            required class="mt-1 block w-full rounded border-gray-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Tanggal Akhir</label>
+                        <input type="date" name="date_to" id="date_to"
+                            value="{{ old('date_to', \Carbon\Carbon::today()->toDateString()) }}" required
+                            class="mt-1 block w-full rounded border-gray-300">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium">Kategori</label>
+                        <select name="category_id" id="category_id" class="mt-1 block w-full rounded border-gray-300">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->category }}</option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Periode maksimal 30 hari.</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-end">
+                    <button type="button" onclick="submitExport()"
+                        class="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-500">
+                        Generate Excel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     {{-- Modal Scan QR --}}
     <div id="qrModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
@@ -168,6 +215,39 @@
             document.getElementById("qrModal").classList.toggle("hidden");
         }
 
+        function toggleExcelModal() {
+            document.getElementById("excelModal").classList.toggle("hidden");
+        }
+
+        function submitExport() {
+            const from = document.getElementById('date_from').value;
+            const to = document.getElementById('date_to').value;
+
+            if (!from || !to) {
+                alert('Pilih tanggal mulai dan akhir.');
+                return;
+            }
+
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+
+            if (toDate < fromDate) {
+                alert('Tanggal akhir harus sama atau setelah tanggal mulai.');
+                return;
+            }
+
+            const diffTime = toDate - fromDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            if (diffDays > 30) {
+                alert('Periode maksimal 30 hari.');
+                return;
+            }
+
+            // submit form -> browser akan men-download response file
+            document.getElementById('export-form').submit();
+            // optional: close modal
+            toggleExcelModal();
+        }
         // Jam & Tanggal Sekarang
         function updateDateTime() {
             const now = new Date();
@@ -216,21 +296,21 @@
                             title: data.message,
                             html: `
         ${data.worker ? `
-                                                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
-                                                                            <tr>
-                                                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
-                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
-                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
-                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
-                                                                            </tr>
-                                                                        </table>
-                                                                    ` : ''}
+                                                                                            <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+                                                                                                <tr>
+                                                                                                    <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                                                                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                                                                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                                                                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+                                                                                                </tr>
+                                                                                            </table>
+                                                                                        ` : ''}
         <br>
         <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
     `,
@@ -251,10 +331,7 @@
                                 clearInterval(timerInterval);
                             }
                         });
-
-
                         toggleQrModal();
-
                         // Auto reload setelah 5 detik jika success
                         if (data.status === 'success') {
                             setTimeout(() => location.reload(), 5000);

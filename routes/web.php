@@ -27,13 +27,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/workers/{worker}/activate', [WorkerController::class, 'activate'])->name('workers.activate');
     Route::resource('workers', WorkerController::class);
     // Worker Presence Schedule
-    Route::resource('worker-presence-schedules', WorkerPresenceScheduleController::class);
-    Route::get('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'index'])->name('worker-presence-schedules.index');
-    Route::post('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])->name('worker-presence-schedules.save');
+    // Worker Presence Schedule
+    Route::resource('worker-presence-schedules', WorkerPresenceScheduleController::class)
+        ->except(['store']); // biar POST tidak otomatis diarahkan ke store()
+    Route::post('worker-presence-schedules', [WorkerPresenceScheduleController::class, 'storeOrUpdate'])
+        ->name('worker-presence-schedules.save');
+
     // Worker Presence (Scan QR)
     Route::resource('worker-presences', WorkerPresenceController::class);
     Route::get('/presences/verify/{hashId}', [WorkerPresenceController::class, 'verify'])
         ->name('worker-presences.verify');
+    Route::post('/presences/export', [WorkerPresenceController::class, 'exportExcel'])->name('worker-presences.export');
 });
 
 require __DIR__ . '/auth.php';
