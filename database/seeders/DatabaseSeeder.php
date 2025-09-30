@@ -14,20 +14,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UserSeeder::class);
+        $this->call(WorkerPresenceScheduleSeeder::class);
 
-        // buat kategori fix
-        $categories = ['Tukang Jawa', 'Tukang Banjar'];
-        foreach ($categories as $category) {
-            WorkerCategory::factory()->create(['category' => $category]);
-        }
-
-        // pekerja random 10 orang
-        Worker::factory(10)->create();
-
-        // jadwal default (1 data aja)
-        WorkerPresenceSchedule::factory()->create();
-
-        // dummy presensi 30 data
-        WorkerPresence::factory(30)->create();
+        //? Factory
+        // $categories = ['Tukang Jawa', 'Tukang Banjar'];
+        // foreach ($categories as $category) {
+        //     WorkerCategory::factory()->create(['category' => $category]);
+        // }
+        // Worker::factory(10)->create();
+        // WorkerPresenceSchedule::factory()->create();
+        // WorkerPresence::factory(30)->create();
     }
 }

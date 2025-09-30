@@ -82,6 +82,11 @@
                             class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded">
                             <span><i class="bi bi-person-plus me-2"></i></span>Tambah Tukang
                         </a>
+                        <a href="{{ route('workers.printAll') }}"
+                            class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
+                            <span><i class="bi bi-printer me-2"></i></span>Cetak Semua ID Card
+                        </a>
+
 
                     </div>
                     <div class="overflow-x-auto rounded-lg overflow-hidden border border-gray-200">

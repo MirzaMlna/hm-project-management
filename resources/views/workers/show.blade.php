@@ -150,7 +150,6 @@
 </x-app-layout>
 
 <script src="https://cdn.jsdelivr.net/npm/qr-code-styling/lib/qr-code-styling.js"></script>
-
 <script type="text/javascript">
     const qrCode = new QRCodeStyling({
         width: 150,
@@ -170,5 +169,5 @@
     });
 
     qrCode.append(document.getElementById("qr"));
-    window.print();
+    // window.print();
 </script>

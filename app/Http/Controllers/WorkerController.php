@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Worker;
 use App\Models\WorkerCategory;
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -140,5 +141,19 @@ class WorkerController extends Controller
         ]);
 
         return redirect()->route('workers.inactive')->with('success', 'Tukang berhasil diaktifkan kembali.');
+    }
+
+
+    public function printAllIdCards()
+    {
+        $hashids = new Hashids('', 40);
+
+        $workers = Worker::where('is_active', true)->get()->map(function ($w) use ($hashids) {
+            // menambahkan properti hash supaya Blade lebih aman pakai
+            $w->hash = $hashids->encode($w->id);
+            return $w;
+        });
+
+        return view('workers.print-all', compact('workers'));
     }
 }
