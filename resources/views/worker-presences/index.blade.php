@@ -67,17 +67,36 @@
                 {{-- Tabel Presensi --}}
                 <div class="bg-white p-6 rounded-lg shadow col-span-2">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">
+                        {{-- <h3 class="text-lg font-semibold">
                             <i class="bi bi-list-task mr-2"></i> Hasil Scan
-                        </h3>
-                        <div class="flex justify-end">
-                            <x-primary-button onclick="toggleExcelModal()"
-                                class="!bg-green-700 hover:!bg-green-600 mr-2">
+                        </h3> --}}
+                        <form method="GET" action="{{ route('worker-presences.index') }}" class="mb-4">
+                            <div class="flex flex-wrap items-end gap-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+                                    <input type="date" name="date"
+                                        value="{{ request('date', \Carbon\Carbon::today()->toDateString()) }}"
+                                        class="mt-1 block w-full rounded border-gray-300">
+                                </div>
+                                <div>
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-500">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+
+                        <div class="flex flex-wrap items-end mt-2">
+                            <button type="submit" onclick="toggleExcelModal()"
+                                class="px-4 py-2 !bg-green-700 hover:!bg-green-600 text-white mr-2 rounded">
                                 <i class="bi bi-file-earmark-spreadsheet"></i>
-                            </x-primary-button>
-                            <x-primary-button class="!bg-red-700 hover:!bg-red-600">
+                            </button>
+                            <button type="submit" onclick="toggleExcelModal()"
+                                class="px-4 py-2 !bg-red-700 hover:!bg-red-600 text-white mr-2 rounded">
                                 <i class="bi bi-file-earmark-pdf"></i>
-                            </x-primary-button>
+                            </button>
                         </div>
                     </div>
 
@@ -258,21 +277,21 @@
                             title: data.message,
                             html: `
                             ${data.worker ? `
-                                            <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
-                                                <tr>
-                                                    <th style="padding:4px;border:1px solid #ccc">Nama</th>
-                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th style="padding:4px;border:1px solid #ccc">Kode</th>
-                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th style="padding:4px;border:1px solid #ccc">Kategori</th>
-                                                    <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
-                                                </tr>
-                                            </table>
-                                        ` : ''}
+                                                                                                                                                                                    <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+                                                                                                                                                                                        <tr>
+                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+                                                                                                                                                                                        </tr>
+                                                                                                                                                                                        <tr>
+                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+                                                                                                                                                                                        </tr>
+                                                                                                                                                                                        <tr>
+                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+                                                                                                                                                                                        </tr>
+                                                                                                                                                                                    </table>
+                                                                                                                                                                                ` : ''}
                             <br>
                             <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
                         `,
