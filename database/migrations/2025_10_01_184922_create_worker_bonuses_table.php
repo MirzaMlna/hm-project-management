@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('worker_bonuses', function (Blueprint $table) {
             $table->id();
+            $table->integer('work_earlier')->default(0);   // Bonus datang lebih awal
+            $table->integer('work_longer')->default(0);    // Bonus kerja lebih lama
+            $table->integer('overtime')->default(0);       // Bonus lembur malam
             $table->timestamps();
         });
     }

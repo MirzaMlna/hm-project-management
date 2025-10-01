@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WorkerBonusController;
 use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkerPresenceController;
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/presences/verify/{hashId}', [WorkerPresenceController::class, 'verify'])
         ->name('worker-presences.verify');
     Route::post('/presences/export', [WorkerPresenceController::class, 'exportExcel'])->name('worker-presences.export');
+
+    // Worker Bonus
+    Route::resource('worker-bonuses', WorkerBonusController::class);
 });
 
 require __DIR__ . '/auth.php';

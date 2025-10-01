@@ -3,62 +3,47 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\WorkerBonus;
 
 class WorkerBonusController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan form pengaturan bonus tukang
      */
     public function index()
     {
-        //
+        $bonus = WorkerBonus::first();
+        return view('worker-bonuses.index', compact('bonus'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Simpan / Update bonus (data tunggal)
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'work_earlier'  => 'required|numeric|min:0',
+            'work_longer'   => 'required|numeric|min:0',
+            'overtime'      => 'required|numeric|min:0',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // ambil data pertama, kalau null buat baru
+        $bonus = WorkerBonus::first();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        if ($bonus) {
+            $bonus->update([
+                'work_earlier' => $request->work_earlier,
+                'work_longer'  => $request->work_longer,
+                'overtime'     => $request->overtime,
+            ]);
+        } else {
+            WorkerBonus::create([
+                'work_earlier' => $request->work_earlier,
+                'work_longer'  => $request->work_longer,
+                'overtime'     => $request->overtime,
+            ]);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('worker-bonuses.index')->with('success', 'Pengaturan bonus berhasil disimpan.');
     }
 }
