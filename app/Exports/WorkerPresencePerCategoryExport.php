@@ -114,7 +114,8 @@ class WorkerPresencePerCategoryExport implements WithMultipleSheets
             // Tambah sheet gaji
             $sheets[] = new WorkerSalaryExport(
                 $rowsGaji,
-                $category->category
+                $category->category,
+                $this->dateRange
             );
         }
 
