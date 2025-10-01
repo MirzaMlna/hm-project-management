@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\WorkerBonus;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Models\WorkerCategory;
 use Carbon\Carbon;
@@ -25,18 +26,21 @@ class WorkerPresencePerCategoryExport implements WithMultipleSheets
     {
         $sheets = [];
 
+        // Ambil bonus config (anggap hanya 1 baris di tabel worker_bonuses)
+        $bonusConfig = WorkerBonus::first();
+
         foreach ($this->categories as $category) {
             $workers = $category->workers->sortBy('name');
 
-            $rows = [];
+            $rowsPresensi = [];
+            $rowsGaji = [];
             $no = 1;
 
             foreach ($workers as $worker) {
                 $row = [];
-                $row[] = $no; // No awal
+                $row[] = $no;
                 $row[] = $worker->code;
                 $row[] = $worker->name;
-                // $row[] = $worker->category->category ?? '-';
                 $row[] = $worker->daily_salary ?? '-';
 
                 $workerPresences = $this->presences->get($worker->id, collect());
@@ -64,26 +68,53 @@ class WorkerPresencePerCategoryExport implements WithMultipleSheets
                         $points = 0;
                     }
 
-                    $row[] = (float) $points;
-                    $totalPoints += (float) $points;
+                    $row[] = (float)$points;
+                    $totalPoints += (float)$points;
                 }
 
-                // summary
-                $row[] = (float) $totalPoints;
-                $row[] = (int) $dla;
-                $row[] = (int) $kll;
-                $row[] = (int) $lm;
-                $row[] = $no; // No akhir
+                $row[] = (float)$totalPoints;
+                $row[] = (int)$dla;
+                $row[] = (int)$kll;
+                $row[] = (int)$lm;
+                $row[] = $no;
 
-                $rows[] = $row;
+                $rowsPresensi[] = $row;
+
+                // === Perhitungan gaji ===
+                $upah = $totalPoints * $worker->daily_salary;
+                $bonusDla = $dla * ($bonusConfig->work_earlier ?? 0);
+                $bonusKll = $kll * ($bonusConfig->work_longer ?? 0);
+                $bonusLm  = $lm * $worker->daily_salary;
+                $totalGaji = $upah + $bonusDla + $bonusKll + $bonusLm;
+
+                $rowsGaji[] = [
+                    $no,
+                    $worker->code,
+                    $worker->name,
+                    $upah,
+                    $bonusDla,
+                    $bonusKll,
+                    $bonusLm,
+                    $totalGaji,
+                    '', // TTD
+                    ''  // Keterangan
+                ];
+
                 $no++;
             }
 
+            // Tambah sheet presensi
             $sheets[] = new WorkerPresenceExport(
-                $rows,
+                $rowsPresensi,
                 array_map(fn($d) => Carbon::parse($d)->format('d-M'), $this->period),
                 $this->dateRange,
                 'TUKANG ' . $category->category
+            );
+
+            // Tambah sheet gaji
+            $sheets[] = new WorkerSalaryExport(
+                $rowsGaji,
+                $category->category
             );
         }
 
