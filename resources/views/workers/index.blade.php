@@ -78,14 +78,16 @@
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold"><span><i class="bi bi-person-check me-2"></i></span>Daftar
                             Tukang Aktif</h3>
-                        <a href="{{ route('workers.create') }}"
-                            class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded">
-                            <span><i class="bi bi-person-plus me-2"></i></span>Tambah Tukang
-                        </a>
-                        <a href="{{ route('workers.printAll') }}"
-                            class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
-                            <span><i class="bi bi-printer me-2"></i></span>Cetak Semua ID Card
-                        </a>
+                        <div class="">
+                            <a href="{{ route('workers.create') }}"
+                                class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded me-2">
+                                <span><i class="bi bi-person-plus"></i></span>
+                            </a>
+                            <a href="{{ route('workers.printAll') }}"
+                                class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
+                                <span><i class="bi bi-printer"></i></span>
+                            </a>
+                        </div>
 
 
                     </div>

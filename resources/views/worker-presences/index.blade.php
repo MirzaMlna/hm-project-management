@@ -177,6 +177,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <div class="p-3">
+                            {{ $presences->links() }}
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -277,21 +281,21 @@
                             title: data.message,
                             html: `
                             ${data.worker ? `
-                                                                                                                                                                                    <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
-                                                                                                                                                                                        <tr>
-                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Nama</th>
-                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
-                                                                                                                                                                                        </tr>
-                                                                                                                                                                                        <tr>
-                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Kode</th>
-                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
-                                                                                                                                                                                        </tr>
-                                                                                                                                                                                        <tr>
-                                                                                                                                                                                            <th style="padding:4px;border:1px solid #ccc">Kategori</th>
-                                                                                                                                                                                            <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
-                                                                                                                                                                                        </tr>
-                                                                                                                                                                                    </table>
-                                                                                                                                                                                ` : ''}
+                                                                                                                                                                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+                                                                                                                                                                                            <tr>
+                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+                                                                                                                                                                                            </tr>
+                                                                                                                                                                                            <tr>
+                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+                                                                                                                                                                                            </tr>
+                                                                                                                                                                                            <tr>
+                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+                                                                                                                                                                                            </tr>
+                                                                                                                                                                                        </table>
+                                                                                                                                                                                    ` : ''}
                             <br>
                             <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
                         `,

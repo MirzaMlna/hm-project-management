@@ -28,14 +28,12 @@ class WorkerPresenceController extends Controller
         $presences = WorkerPresence::with(['worker.category'])
             ->whereDate('date', $date)
             ->orderBy('id')
-            ->get();
+            ->paginate(10);
 
-        // Ambil daftar kategori untuk modal filter
         $categories = WorkerCategory::orderBy('category')->get();
 
         return view('worker-presences.index', compact('worker_presence_schedules', 'presences', 'categories'));
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -124,22 +122,39 @@ class WorkerPresenceController extends Controller
 
         // FIRST CHECK IN
         if (is_null($presence->first_check_in)) {
-
-            if ($now->between($firstStart->copy()->subHours(2), $firstEnd)) {
+            // Jika lebih awal (2 jam sebelum sampai tepat saat jam mulai)
+            if ($now->between($firstStart->copy()->subHours(2), $firstStart)) {
                 $presence->first_check_in  = $now;
-                $presence->is_work_earlier = $now->lt($firstStart);
+                $presence->is_work_earlier = true;
                 $presence->save();
+
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Presensi ke-1',
-                    'worker' => [
-                        'name' => $worker->name,
-                        'code' => $worker->code,
+                    'status'  => 'success',
+                    'message' => 'Presensi ke-1 (Lebih Awal)',
+                    'worker'  => [
+                        'name'     => $worker->name,
+                        'code'     => $worker->code,
+                        'category' => $worker->category->category ?? '-'
+                    ]
+                ]);
+            }
+            if ($now->between($firstStart, $firstEnd)) {
+                $presence->first_check_in  = $now;
+                $presence->is_work_earlier = false;
+                $presence->save();
+
+                return response()->json([
+                    'status'  => 'success',
+                    'message' => 'Presensi ke-1 (Tepat Waktu)',
+                    'worker'  => [
+                        'name'     => $worker->name,
+                        'code'     => $worker->code,
                         'category' => $worker->category->category ?? '-'
                     ]
                 ]);
             }
         }
+
 
         // SECOND CHECK IN
         if (is_null($presence->second_check_in)) {
