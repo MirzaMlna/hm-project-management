@@ -28,12 +28,14 @@
                             </x-slot>
 
                             <x-slot name="content">
+                                <div class="text-sm ms-3 font-bold">Data</div>
                                 <x-dropdown-link :href="route('worker-categories.index')">
                                     <i class="bi bi-list me-2"></i>Kategori Tukang
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('workers.index')">
                                     <i class="bi bi-people me-2"></i>Data Tukang
                                 </x-dropdown-link>
+                                <div class="text-sm ms-3 font-bold">Presensi</div>
                                 <x-dropdown-link :href="route('worker-presence-schedules.index')">
                                     <i class="bi bi-clock me-2"></i> Jadwal Presensi
                                 </x-dropdown-link>
@@ -106,6 +108,33 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-dropdown align="right" width="full">
+                <x-slot name="trigger">
+                    <button
+                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <div>Tukang</div>
+                        <div class="ms-2">
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </button>
+                </x-slot>
+                <x-slot name="content">
+                    <div class="text-sm ms-3 mt-3 font-bold">Data</div>
+                    <x-dropdown-link :href="route('worker-categories.index')">
+                        <i class="bi bi-list me-2"></i>Kategori Tukang
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('workers.index')">
+                        <i class="bi bi-people me-2"></i>Data Tukang
+                    </x-dropdown-link>
+                    <div class="text-sm ms-3 font-bold">Presensi</div>
+                    <x-dropdown-link :href="route('worker-presence-schedules.index')">
+                        <i class="bi bi-clock me-2"></i> Jadwal Presensi
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('worker-presences.index')">
+                        <i class="bi bi-qr-code-scan me-2"></i> Scan QR Presensi
+                    </x-dropdown-link>
+                </x-slot>
+            </x-dropdown>
         </div>
 
         <!-- Responsive Settings Options -->
