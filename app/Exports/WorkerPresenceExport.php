@@ -6,13 +6,14 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, WithEvents
+class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, WithEvents, WithTitle
 {
     protected $rows;
     protected $period;      // array tanggal (format '01-Sep', ...)
@@ -34,11 +35,11 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
 
     public function headings(): array
     {
-        $baseHead = ['No', 'Kode', 'Nama', 'Kategori', 'Upah Harian'];
-        $uraianEmpty = array_fill(0, count($this->period), '');
+        $baseHead = ['No', 'Kode', 'Nama', 'Upah Harian'];
+        $presencesDetails = array_fill(0, count($this->period), '');
         $lastHead = ['Total', 'DLA', 'KLL', 'LM', 'No'];
 
-        $row1 = array_merge($baseHead, $uraianEmpty, $lastHead);
+        $row1 = array_merge($baseHead, $presencesDetails, $lastHead);
         $row2 = array_merge($baseHead, $this->period, $lastHead);
 
         return [$row1, $row2];
@@ -50,11 +51,15 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
+                // Set default font Times New Roman untuk seluruh sheet
+                $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
+                $sheet->getParent()->getDefaultStyle()->getFont()->setSize(11);
+
                 // sisip 4 baris judul di atas
                 $sheet->insertNewRowBefore(1, 4);
 
                 $periodCount = count($this->period);
-                $startColIndex = 6; // kolom F
+                $startColIndex = 5; // kolom E
                 $endColIndex = $startColIndex + max(0, $periodCount - 1);
 
                 $summaryColsCount = 5;
@@ -64,7 +69,7 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                 $lastCol = Coordinate::stringFromColumnIndex($summaryEndIndex);
 
                 // ===== Judul atas =====
-                $sheet->mergeCells("A1:{$lastCol}1")->setCellValue('A1', 'ABSEN PEKERJA HARIAN');
+                $sheet->mergeCells("A1:{$lastCol}1")->setCellValue('A1', 'ABSEN PEKERJA HARIAN HM COMPANY');
                 $sheet->mergeCells("A2:{$lastCol}2")->setCellValue('A2', 'PROYEK JL. LINGKAR DALAM SELATAN, BANJARMASIN');
                 $sheet->mergeCells("A3:{$lastCol}3")->setCellValue('A3', $this->dateRange);
                 $sheet->mergeCells("A4:{$lastCol}4")->setCellValue('A4', $this->categoryName);
@@ -78,7 +83,7 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                 ]);
 
                 // ===== Merge header kiri (No..Upah) ke bawah =====
-                for ($i = 1; $i <= 5; $i++) {
+                for ($i = 1; $i <= 4; $i++) {
                     $col = Coordinate::stringFromColumnIndex($i);
                     $sheet->mergeCells("{$col}5:{$col}6");
                 }
@@ -128,7 +133,7 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                 ]);
 
                 // ===== Format Rupiah di kolom Upah Harian =====
-                $salaryCol = Coordinate::stringFromColumnIndex(5); // E
+                $salaryCol = Coordinate::stringFromColumnIndex(4); // D
                 $sheet->getStyle("{$salaryCol}7:{$salaryCol}{$highestRow}")
                     ->getNumberFormat()
                     ->setFormatCode('"Rp"#,##0');
@@ -159,5 +164,11 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                 $sheet->calculateColumnWidths();
             },
         ];
+    }
+
+    public function title(): string
+    {
+        // Nama sheet sesuai nama kategori
+        return $this->categoryName;
     }
 }

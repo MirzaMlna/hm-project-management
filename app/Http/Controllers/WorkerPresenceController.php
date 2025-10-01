@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\WorkerPresenceExport;
+use App\Exports\WorkerPresencePerCategoryExport;
 use App\Models\Worker;
 use App\Models\WorkerCategory;
 use App\Models\WorkerPresence;
@@ -213,7 +214,6 @@ class WorkerPresenceController extends Controller
         $validator = Validator::make($request->all(), [
             'date_from'   => 'required|date',
             'date_to'     => 'required|date|after_or_equal:date_from',
-            'category_id' => 'nullable|exists:categories,id',
         ]);
 
         if ($validator->fails()) {
@@ -228,95 +228,25 @@ class WorkerPresenceController extends Controller
             return redirect()->back()->with('error', 'Range maksimal 30 hari.');
         }
 
-        // buat array tanggal dalam rentang
         $period = [];
-        $datesHeader = [];
         $d = $start->copy();
         while ($d->lte($end)) {
-            $period[] = $d->toDateString(); // yyyy-mm-dd (cocok untuk pencarian di DB)
-            $datesHeader[] = $d->format('d-M'); // header kolom excel
+            $period[] = $d->toDateString(); // yyyy-mm-dd
             $d->addDay();
         }
 
-        $workers = Worker::with('category')
-            ->when($request->category_id, function ($q) use ($request) {
-                $q->where('category_id', $request->category_id);
-            })
-            ->orderBy('name')
-            ->get();
+        $categories = WorkerCategory::with('workers')->get();
 
         $presences = WorkerPresence::whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->get()
             ->groupBy('worker_id');
 
-        $rows = [];
-        $no = 1;
-
-        foreach ($workers as $worker) {
-            // ambil nomor baris sekali saja
-            $index = $no++;
-
-            $row = [];
-            $row[] = $index; // No awal
-            $row[] = $worker->code;
-            $row[] = $worker->name;
-            $row[] = $worker->category->category ?? '-';
-            $row[] = $worker->daily_salary ?? '-';
-
-            $workerPresences = $presences->get($worker->id, collect());
-
-            $totalPoints = 0;
-            $dla = $kll = $lm = 0;
-
-            foreach ($period as $date) {
-                $p = $workerPresences->firstWhere('date', $date);
-
-                if ($p) {
-                    $count = 0;
-                    if ($p->first_check_in) $count++;
-                    if ($p->second_check_in) $count++;
-                    if ($p->check_out) $count++;
-
-                    if ($count >= 3) $points = 1;
-                    elseif ($count == 2) $points = 0.5;
-                    else $points = 0;
-
-                    if ($p->is_work_earlier) $dla++;
-                    if ($p->is_work_longer) $kll++;
-                    if ($p->is_overtime) $lm++;
-                } else {
-                    $points = 0;
-                }
-
-                $row[] = (float) $points;
-                $totalPoints += (float) $points;
-            }
-
-            // kolom summary
-            $row[] = (float) $totalPoints;
-            $row[] = (int) $dla;
-            $row[] = (int) $kll;
-            $row[] = (int) $lm;
-            $row[] = $index; // No akhir (sama dengan No awal)
-
-            $rows[] = $row;
-        }
-
-
-        $headings = array_merge(
-            ['No', 'Kode', 'Nama', 'Kategori', 'Upah Harian'],
-            $datesHeader,
-            ['Total', 'DLA', 'KLL', 'LM', 'No']
-        );
-
         return Excel::download(
-            new WorkerPresenceExport(
-                $rows,
-                $datesHeader, // array tanggal "01-Sep", "02-Sep", dst
+            new WorkerPresencePerCategoryExport(
+                $period,
                 $start->format('d F Y') . ' s/d ' . $end->format('d F Y'),
-                $request->category_id
-                    ? 'Kategori: ' . ($workers->first()->category->category ?? '-')
-                    : 'Semua Kategori Tukang'
+                $categories,
+                $presences
             ),
             'presensi_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.xlsx'
         );
