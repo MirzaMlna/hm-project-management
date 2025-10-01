@@ -9,6 +9,5 @@ class WorkerBonus extends Model
     protected $fillable = [
         'work_earlier',
         'work_longer',
-        'overtime',
     ];
 }

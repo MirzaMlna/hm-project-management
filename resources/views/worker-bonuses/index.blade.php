@@ -34,7 +34,7 @@
                             Bonus Datang Lebih Awal
                         </label>
                         <input type="number" name="work_earlier"
-                            value="{{ old('work_earlier', $bonus->work_earlier ?? 0) }}"
+                            value="{{ old('work_earlier', $workerBonus->work_earlier ?? 0) }}"
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-sky-200"
                             placeholder="Masukkan nominal bonus">
                     </div>
@@ -45,20 +45,12 @@
                             Bonus Kerja Lebih Lama
                         </label>
                         <input type="number" name="work_longer"
-                            value="{{ old('work_longer', $bonus->work_longer ?? 0) }}"
+                            value="{{ old('work_longer', $workerBonus->work_longer ?? 0) }}"
                             class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-sky-200"
                             placeholder="Masukkan nominal bonus">
                     </div>
 
-                    {{-- Bonus Lembur Malam --}}
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Bonus Lembur Malam
-                        </label>
-                        <input type="number" name="overtime" value="{{ old('overtime', $bonus->overtime ?? 0) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-sky-200"
-                            placeholder="Masukkan nominal bonus">
-                    </div>
+
 
                     {{-- Submit Button --}}
                     <div>
