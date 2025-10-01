@@ -199,7 +199,8 @@ class WorkerPresenceController extends Controller
                 'worker' => [
                     'name' => $worker->name,
                     'code' => $worker->code,
-                    'category' => $worker->category->category ?? '-'
+                    'category' => $worker->category->category ?? '-',
+                    'daily_salary' => $worker->daily_salary->daily_salary ?? '-'
                 ]
             ]);
         }
@@ -237,7 +238,6 @@ class WorkerPresenceController extends Controller
             $d->addDay();
         }
 
-        // ambil worker yang sesuai filter kategori (atau semua)
         $workers = Worker::with('category')
             ->when($request->category_id, function ($q) use ($request) {
                 $q->where('category_id', $request->category_id);
@@ -245,7 +245,6 @@ class WorkerPresenceController extends Controller
             ->orderBy('name')
             ->get();
 
-        // ambil semua presensi dalam rentang dan group by worker_id
         $presences = WorkerPresence::whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->get()
             ->groupBy('worker_id');
@@ -254,11 +253,15 @@ class WorkerPresenceController extends Controller
         $no = 1;
 
         foreach ($workers as $worker) {
+            // ambil nomor baris sekali saja
+            $index = $no++;
+
             $row = [];
-            $row[] = $no++;
-            $row[] = $worker->name;
+            $row[] = $index; // No awal
             $row[] = $worker->code;
+            $row[] = $worker->name;
             $row[] = $worker->category->category ?? '-';
+            $row[] = $worker->daily_salary ?? '-';
 
             $workerPresences = $presences->get($worker->id, collect());
 
@@ -269,22 +272,15 @@ class WorkerPresenceController extends Controller
                 $p = $workerPresences->firstWhere('date', $date);
 
                 if ($p) {
-                    // hitung berapa kali presensi (count dari 3 field)
                     $count = 0;
                     if ($p->first_check_in) $count++;
                     if ($p->second_check_in) $count++;
                     if ($p->check_out) $count++;
 
-                    // mapping poin:
-                    // 0 => 0  (absen)
-                    // 1 => 0
-                    // 2 => 0.5
-                    // >=3 => 1
                     if ($count >= 3) $points = 1;
                     elseif ($count == 2) $points = 0.5;
                     else $points = 0;
 
-                    // akumulasi DLA/KLL/LM berdasar boolean di record
                     if ($p->is_work_earlier) $dla++;
                     if ($p->is_work_longer) $kll++;
                     if ($p->is_overtime) $lm++;
@@ -292,27 +288,37 @@ class WorkerPresenceController extends Controller
                     $points = 0;
                 }
 
-                // tambahkan kolom poin hari itu
-                // gunakan numeric value (float) supaya Excel mengenali angka
                 $row[] = (float) $points;
                 $totalPoints += (float) $points;
             }
 
             // kolom summary
-            $row[] = (float) $totalPoints; // total poin periode
+            $row[] = (float) $totalPoints;
             $row[] = (int) $dla;
             $row[] = (int) $kll;
             $row[] = (int) $lm;
+            $row[] = $index; // No akhir (sama dengan No awal)
 
             $rows[] = $row;
         }
 
+
         $headings = array_merge(
-            ['No', 'Nama', 'Kode', 'Kategori'],
+            ['No', 'Kode', 'Nama', 'Kategori', 'Upah Harian'],
             $datesHeader,
-            ['Total Kehadiran', 'DLA', 'KLL', 'LM']
+            ['Total', 'DLA', 'KLL', 'LM', 'No']
         );
 
-        return Excel::download(new WorkerPresenceExport($headings, $rows), 'presensi_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.xlsx');
+        return Excel::download(
+            new WorkerPresenceExport(
+                $rows,
+                $datesHeader, // array tanggal "01-Sep", "02-Sep", dst
+                $start->format('d F Y') . ' s/d ' . $end->format('d F Y'),
+                $request->category_id
+                    ? 'Kategori: ' . ($workers->first()->category->category ?? '-')
+                    : 'Semua Kategori Tukang'
+            ),
+            'presensi_' . $start->format('Ymd') . '_' . $end->format('Ymd') . '.xlsx'
+        );
     }
 }
