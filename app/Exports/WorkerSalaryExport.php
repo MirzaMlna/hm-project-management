@@ -112,8 +112,39 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                         ->setFormatCode('"Rp"#,##0');
                 }
 
+                // ===== Tambahkan baris JUMLAH di bawah data =====
+                $jumlahRow = $highestRow + 1;
+
+                // Tulis label "JUMLAH"
+                $sheet->mergeCells("A{$jumlahRow}:G{$jumlahRow}");
+                $sheet->setCellValue("A{$jumlahRow}", "JUMLAH");
+
+                // Rumus SUM di kolom Total Gaji (H)
+                $sheet->setCellValue("H{$jumlahRow}", "=SUM(H6:H{$highestRow})");
+
+                // Style baris jumlah
+                $sheet->getStyle("A{$jumlahRow}:{$lastCol}{$jumlahRow}")->applyFromArray([
+                    'font' => ['bold' => true],
+                    'borders' => [
+                        'allBorders' => ['borderStyle' => Border::BORDER_THIN]
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical'   => Alignment::VERTICAL_CENTER
+                    ],
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'FFF2CC'] // kuning muda biar beda
+                    ]
+                ]);
+
+                // Format rupiah untuk total gaji (H)
+                $sheet->getStyle("H{$jumlahRow}")
+                    ->getNumberFormat()
+                    ->setFormatCode('"Rp"#,##0');
+
                 // ===== Tambahkan keterangan di bawah =====
-                $rowKeterangan = $highestRow + 2;
+                $rowKeterangan = $jumlahRow + 2;
                 $sheet->mergeCells("A{$rowKeterangan}:{$lastCol}{$rowKeterangan}")
                     ->setCellValue("A{$rowKeterangan}", "Keterangan :");
                 $sheet->mergeCells("A" . ($rowKeterangan + 1) . ":{$lastCol}" . ($rowKeterangan + 1))
