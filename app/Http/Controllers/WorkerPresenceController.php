@@ -33,8 +33,28 @@ class WorkerPresenceController extends Controller
 
         $categories = WorkerCategory::orderBy('category')->get();
 
-        return view('worker-presences.index', compact('worker_presence_schedules', 'presences', 'categories'));
+        // Hitung jumlah tukang aktif
+        $totalWorkers = Worker::where('is_active', true)->count();
+
+        // Hitung tukang aktif yang sudah absen (distinct supaya tidak double)
+        $presentWorkers = WorkerPresence::whereDate('date', $date)
+            ->whereHas('worker', function ($q) {
+                $q->where('is_active', true);
+            })
+            ->distinct('worker_id')
+            ->count('worker_id');
+
+        // Tukang aktif yang belum absen
+        $notPresentCount = $totalWorkers - $presentWorkers;
+
+        return view('worker-presences.index', compact(
+            'worker_presence_schedules',
+            'presences',
+            'categories',
+            'notPresentCount'
+        ));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -86,6 +106,34 @@ class WorkerPresenceController extends Controller
         return redirect()->route('worker-presences.index')
             ->with('success', 'Presensi Tukang Berhasil Dihapus.');
     }
+
+    public function preview($hashId)
+    {
+        $decoded = generateQr($hashId, 'D');
+        $workerId = is_array($decoded) && isset($decoded[0]) ? $decoded[0] : null;
+
+        if (!$workerId) {
+            return response()->json(['status' => 'error', 'message' => 'QR Code tidak valid.']);
+        }
+
+        $worker = Worker::with('category')->find($workerId);
+        if (!$worker || !$worker->is_active) {
+            return response()->json(['status' => 'error', 'message' => 'Tukang tidak ditemukan / nonaktif.']);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'worker' => [
+                'photo' => $worker->photo
+                    ? asset('storage/' . $worker->photo)
+                    : null,
+                'name'     => $worker->name,
+                'code'     => $worker->code,
+                'category' => $worker->category->category ?? '-'
+            ]
+        ]);
+    }
+
 
     public function verify($hashId)
     {
@@ -166,6 +214,7 @@ class WorkerPresenceController extends Controller
                     'status' => 'success',
                     'message' => 'Presensi ke-2',
                     'worker' => [
+                        'photo' => $worker->photo,
                         'name' => $worker->name,
                         'code' => $worker->code,
                         'category' => $worker->category->category ?? '-'
@@ -174,6 +223,7 @@ class WorkerPresenceController extends Controller
             }
         }
 
+        // CHECK OUT
         // CHECK OUT
         if (is_null($presence->check_out)) {
             if ($now->lt($outStart)) {
@@ -191,6 +241,10 @@ class WorkerPresenceController extends Controller
             } elseif ($now->gte($outEnd->copy()->addHours(2))) {
                 $presence->is_work_longer = false;
                 $presence->is_overtime = true;
+
+                // paksa flag lain ke false
+                $presence->is_work_earlier = false;
+                $presence->is_work_longer  = false;
             }
 
             $presence->save();
@@ -205,6 +259,7 @@ class WorkerPresenceController extends Controller
                 ]
             ]);
         }
+
 
         return response()->json(['status' => 'info', 'message' => 'Semua presensi untuk hari ini sudah tercatat.']);
     }

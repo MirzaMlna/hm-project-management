@@ -1,4 +1,11 @@
 <x-app-layout>
+    <style>
+        #qr-reader video {
+            transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+        }
+    </style>
+
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -62,6 +69,12 @@
                         <i class="bi bi-qr-code-scan mr-2"></i> Scan QR Code
                     </h3>
                     <div id="qr-reader" class="w-full"></div>
+                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
+                        <p class="text-sm text-red-700 font-semibold">
+                            Belum Absen: <span class="text-xl font-bold">{{ $notPresentCount }}</span> Tukang
+                        </p>
+                    </div>
+
                 </div>
 
                 {{-- Tabel Presensi --}}
@@ -235,7 +248,7 @@
 
             const fromDate = new Date(from);
             const toDate = new Date(to);
-            if (toDate < fromDate) return alert('Tanggal akhir harus sama/lebih besar dari tanggal mulai.');
+            if (toDate < fromDate) return alert('Tanggal akhir harus sama/lebih besar dari tangqrgal mulai.');
 
             const diffDays = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
             if (diffDays > 30) return alert('Periode maksimal 30 hari.');
@@ -263,70 +276,102 @@
             const qrReader = document.getElementById("qr-reader");
             if (!qrReader) return;
 
-            let isCooldown = false; // cooldown flag
+            let isCooldown = false;
 
             new Html5QrcodeScanner("qr-reader", {
                 fps: 10,
                 qrbox: 250
             }).render((decodedText) => {
-                if (isCooldown) return; // skip kalau masih cooldown
+                if (isCooldown) return;
                 isCooldown = true;
 
-                fetch(`/presences/verify/${decodedText}`)
+                // 1. Ambil preview data tukang
+                fetch(`/presences/preview/${decodedText}`)
                     .then(res => res.json())
                     .then(data => {
+                        if (data.status !== 'success') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'QR Tidak Valid',
+                                text: data.message
+                            });
+                            isCooldown = false;
+                            return;
+                        }
+
+                        // 2. Tampilkan modal konfirmasi
                         Swal.fire({
-                            icon: data.status === 'success' ? 'success' : data.status ===
-                                'error' ? 'error' : 'info',
-                            title: data.message,
+                            title: 'Konfirmasi Presensi',
                             html: `
-                            ${data.worker ? `
-                                                                                                                                                                                        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
-                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Nama</th>
-                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
-                                                                                                                                                                                            </tr>
-                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Kode</th>
-                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
-                                                                                                                                                                                            </tr>
-                                                                                                                                                                                            <tr>
-                                                                                                                                                                                                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
-                                                                                                                                                                                                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
-                                                                                                                                                                                            </tr>
-                                                                                                                                                                                        </table>
-                                                                                                                                                                                    ` : ''}
-                            <br>
-                            <b>Menutup dalam <span id="swal-timer">5</span> detik...</b>
-                        `,
-                            timer: 5000,
-                            timerProgressBar: true,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                const timerSpan = Swal.getHtmlContainer().querySelector(
-                                    '#swal-timer');
-                                let timeLeft = 5;
-                                timerInterval = setInterval(() => {
-                                    timeLeft--;
-                                    if (timeLeft >= 0) timerSpan.textContent =
-                                        timeLeft;
-                                }, 1000);
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval);
+        <table class="swal2-table" style="width:100%;text-align:left;border-collapse:collapse;margin-top:10px">
+            <tr>
+                <th style="padding:4px;border:1px solid #ccc">Foto</th>
+                <td style="padding:4px;border:1px solid #ccc">
+                    ${data.worker.photo 
+                        ? `<img src="${data.worker.photo}" alt="${data.worker.name}"
+                                                    style="width:120px;height:120px;object-cover;border-radius:8px;border:2px solid #ccc;box-shadow:0 2px 4px rgba(0,0,0,0.1);">`
+                        : `<div style="width:120px;height:120px;display:flex;align-items:center;justify-content:center;
+                                                       background:#e5e7eb;border-radius:8px;color:#6b7280;font-style:italic;">
+                                                   Tidak ada foto
+                                               </div>`}
+                </td>
+            </tr>
+            <tr>
+                <th style="padding:4px;border:1px solid #ccc">Nama</th>
+                <td style="padding:4px;border:1px solid #ccc">${data.worker.name}</td>
+            </tr>
+            <tr>
+                <th style="padding:4px;border:1px solid #ccc">Kode</th>
+                <td style="padding:4px;border:1px solid #ccc">${data.worker.code}</td>
+            </tr>
+            <tr>
+                <th style="padding:4px;border:1px solid #ccc">Kategori</th>
+                <td style="padding:4px;border:1px solid #ccc">${data.worker.category}</td>
+            </tr>
+        </table>
+    `,
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonText: 'OK Presensi',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // 3. Kalau OK baru simpan ke DB
+                                fetch(`/presences/verify/${decodedText}`)
+                                    .then(res => res.json())
+                                    .then(resp => {
+                                        Swal.fire({
+                                            icon: resp.status === 'success' ?
+                                                'success' : 'error',
+                                            title: resp.message
+                                        }).then(() => {
+                                            if (resp.status === 'success') location
+                                                .reload();
+                                        });
+                                    })
+                                    .catch(() => {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal menyimpan presensi'
+                                        });
+                                    })
+                                    .finally(() => {
+                                        setTimeout(() => {
+                                            isCooldown = false;
+                                        }, 2000);
+                                    });
+                            } else {
+                                isCooldown = false; // batal
                             }
                         });
-                        if (data.status === 'success') setTimeout(() => location.reload(), 5000);
                     })
-                    .catch(() => Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal memproses presensi'
-                    }));
-
-                // reset cooldown setelah 5 detik
-                setTimeout(() => {
-                    isCooldown = false;
-                }, 5000);
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal membaca QR'
+                        });
+                        isCooldown = false;
+                    });
             });
         });
     </script>

@@ -70,7 +70,7 @@ class WorkerController extends Controller
 
     public function show(Worker $worker)
     {
-        $qrCode = (new \Hashids\Hashids('', 40))->encode($worker->id);
+        $qrCode = (new Hashids('', 40))->encode($worker->id);
         return view('workers.show', compact('worker', 'qrCode'));
     }
 
@@ -137,7 +137,7 @@ class WorkerController extends Controller
     {
         $worker->update([
             'is_active' => true,
-            'note' => null, // reset note saat aktifkan kembali
+            'note' => null,
         ]);
 
         return redirect()->route('workers.inactive')->with('success', 'Tukang berhasil diaktifkan kembali.');

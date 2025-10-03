@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/presences/verify/{hashId}', [WorkerPresenceController::class, 'verify'])
         ->name('worker-presences.verify');
     Route::post('/presences/export', [WorkerPresenceController::class, 'exportExcel'])->name('worker-presences.export');
+    Route::get('/presences/preview/{hashId}', [WorkerPresenceController::class, 'preview'])
+        ->name('worker-presences.preview');
 
     // Worker Bonus
     Route::resource('worker-bonuses', WorkerBonusController::class);
