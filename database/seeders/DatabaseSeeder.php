@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(WorkerPresenceScheduleSeeder::class);
+        $this->call(WorkerPresenceSeeder::class);
+
 
         // 1. Buat kategori
         // $categories = ['Tukang Jawa', 'Tukang Banjar'];

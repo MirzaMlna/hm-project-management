@@ -107,7 +107,7 @@
                             @forelse ($workers as $index => $worker)
                                 <tr class="text-center border-b">
                                     <td class="px-4 py-2">{{ $workers->firstItem() + $index }}</td>
-                                    <td class="px-4 py-2">{{ $worker->category->category ?? '-' }}</td>
+                                    <td class="px-4 py-2 text-gray-500">{{ $worker->category->category ?? '-' }}</td>
                                     <td class="px-4 py-2 font-semibold">{{ $worker->name }}</td>
                                     <td class="px-4 py-2">{{ $worker->code }}</td>
                                     <td class="px-4 py-2">{{ number_format($worker->daily_salary, 0, ',', '.') }}</td>
