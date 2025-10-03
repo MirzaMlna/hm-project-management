@@ -69,11 +69,11 @@
 
             <!-- Tabel Tukang -->
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+                <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
                         <i class="bi bi-person-check"></i> Daftar Tukang Aktif
                     </h3>
-                    <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex flex-wrap items-end gap-3">
                         <button onclick="openImportModal()"
                             class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center gap-2">
                             <i class="bi bi-upload"></i>
