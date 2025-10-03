@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\WorkersImport;
 use App\Models\Worker;
 use App\Models\WorkerCategory;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class WorkerController extends Controller
 {
@@ -155,5 +157,15 @@ class WorkerController extends Controller
         });
 
         return view('workers.print-all', compact('workers'));
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls|max:2048'
+        ]);
+
+        Excel::import(new WorkersImport, $request->file('file'));
+
+        return redirect()->route('workers.index')->with('success', 'Data tukang berhasil diimport!');
     }
 }

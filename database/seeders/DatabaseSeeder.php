@@ -15,32 +15,32 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UserSeeder::class);
-        // $this->call(WorkerPresenceScheduleSeeder::class);
+        $this->call(WorkerPresenceScheduleSeeder::class);
 
         // 1. Buat kategori
-        $categories = ['Tukang Jawa', 'Tukang Banjar'];
-        foreach ($categories as $category) {
-            WorkerCategory::factory()->create(['category' => $category]);
-        }
+        // $categories = ['Tukang Jawa', 'Tukang Banjar'];
+        // foreach ($categories as $category) {
+        //     WorkerCategory::factory()->create(['category' => $category]);
+        // }
 
-        // 2. Buat 10 worker
-        $workers = Worker::factory(10)->create();
+        // // 2. Buat 10 worker
+        // $workers = Worker::factory(10)->create();
 
-        // 3. Buat schedule (bisa satu baris saja)
-        WorkerPresenceSchedule::factory()->create();
+        // // 3. Buat schedule (bisa satu baris saja)
+        // WorkerPresenceSchedule::factory()->create();
 
-        // 4. Buat presensi per worker setiap hari
-        $startDate = Carbon::now()->subDays(29); // 30 hari terakhir
-        $endDate = Carbon::now();
+        // // 4. Buat presensi per worker setiap hari
+        // $startDate = Carbon::now()->subDays(29); // 30 hari terakhir
+        // $endDate = Carbon::now();
 
-        foreach ($workers as $worker) {
-            $date = $startDate->copy();
-            while ($date->lte($endDate)) {
-                WorkerPresence::factory()->for($worker)->state([
-                    'date' => $date->format('Y-m-d')
-                ])->create();
-                $date->addDay();
-            }
-        }
+        // foreach ($workers as $worker) {
+        //     $date = $startDate->copy();
+        //     while ($date->lte($endDate)) {
+        //         WorkerPresence::factory()->for($worker)->state([
+        //             'date' => $date->format('Y-m-d')
+        //         ])->create();
+        //         $date->addDay();
+        //     }
+        // }
     }
 }

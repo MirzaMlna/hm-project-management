@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/workers/inactive', [WorkerController::class, 'inactive'])->name('workers.inactive');
     Route::post('/workers/{worker}/activate', [WorkerController::class, 'activate'])->name('workers.activate');
     Route::get('/workers/print-all', [WorkerController::class, 'printAllIdCards'])->name('workers.printAll');
+    Route::post('/workers/import', [WorkerController::class, 'import'])->name('workers.import');
     Route::resource('workers', WorkerController::class);
     // Worker Presence Schedule
     // Worker Presence Schedule
