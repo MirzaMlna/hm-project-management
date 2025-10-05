@@ -309,11 +309,11 @@
                 <td style="padding:4px;border:1px solid #ccc">
                     ${data.worker.photo 
                         ? `<img src="${data.worker.photo}" alt="${data.worker.name}"
-                                                    style="width:120px;height:120px;object-cover;border-radius:8px;border:2px solid #ccc;box-shadow:0 2px 4px rgba(0,0,0,0.1);">`
+                                                        style="width:120px;height:120px;object-cover;border-radius:8px;border:2px solid #ccc;box-shadow:0 2px 4px rgba(0,0,0,0.1);">`
                         : `<div style="width:120px;height:120px;display:flex;align-items:center;justify-content:center;
-                                                       background:#e5e7eb;border-radius:8px;color:#6b7280;font-style:italic;">
-                                                   Tidak ada foto
-                                               </div>`}
+                                                           background:#e5e7eb;border-radius:8px;color:#6b7280;font-style:italic;">
+                                                       Tidak ada foto
+                                                   </div>`}
                 </td>
             </tr>
             <tr>

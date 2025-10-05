@@ -14,14 +14,17 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- Alert --}}
+            {{-- Alert sukses/gagal --}}
             @if (session('success'))
-                <div class="mb-4 p-4 rounded bg-green-100 text-green-800 shadow-sm">
+                <div id="alert-success"
+                    class="mb-4 p-4 rounded bg-green-100 text-green-800 shadow-sm transition-opacity duration-500">
                     ✅ {{ session('success') }}
                 </div>
             @endif
+
             @if (session('error'))
-                <div class="mb-4 p-4 rounded bg-red-100 text-red-800 shadow-sm">
+                <div id="alert-error"
+                    class="mb-4 p-4 rounded bg-red-100 text-red-800 shadow-sm transition-opacity duration-500">
                     ❌ {{ session('error') }}
                 </div>
             @endif
@@ -222,4 +225,16 @@
     function closeImportModal() {
         document.getElementById('importModal').classList.add('hidden');
     }
+    // Hilangkan alert setelah 5 detik (5000 ms)
+    setTimeout(() => {
+        const successAlert = document.getElementById('alert-success');
+        const errorAlert = document.getElementById('alert-error');
+
+        [successAlert, errorAlert].forEach(alert => {
+            if (alert) {
+                alert.classList.add('opacity-0'); // efek fade
+                setTimeout(() => alert.remove(), 500); // hapus setelah animasi
+            }
+        });
+    }, 5000);
 </script>
