@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ItemCategory;
 use App\Models\ItemIn;
 use App\Models\Item;
 use App\Models\ItemStock;
@@ -12,26 +13,30 @@ use Carbon\Carbon;
 
 class ItemInController extends Controller
 {
+
     public function index()
     {
         $items = Item::orderBy('name')->get();
-        $suppliers = ItemSupplier::orderBy('name')->get();
+        $suppliers = ItemSupplier::orderBy('supplier')->get();
+        $categories = ItemCategory::orderBy('category')->get();
         $itemIns = ItemIn::with(['item', 'supplier'])->orderBy('purchase_date', 'desc')->paginate(10);
 
-        return view('item-ins.index', compact('itemIns', 'items', 'suppliers'));
+        return view('item-ins.index', compact('itemIns', 'items', 'suppliers', 'categories'));
     }
+
 
     public function store(Request $request)
     {
         $request->validate([
             'item_id' => 'required|exists:items,id',
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'required|exists:item_suppliers,id', // ✅ ubah ini
             'quantity' => 'required|integer|min:1',
             'unit_price' => 'required|numeric|min:0',
             'purchase_date' => 'required|date',
             'recipt_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'note' => 'nullable|string',
         ]);
+
 
         $path = null;
         if ($request->hasFile('recipt_photo')) {
@@ -78,5 +83,14 @@ class ItemInController extends Controller
 
         $itemIn->delete();
         return redirect()->back()->with('success', 'Data barang masuk berhasil dihapus dan stok disesuaikan.');
+    }
+
+    public function getItemsByCategory($id)
+    {
+        $items = Item::where('item_category_id', $id)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($items);
     }
 }

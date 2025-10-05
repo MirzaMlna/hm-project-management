@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('item-stocks', ItemStockController::class);
     // Incoming Items
     Route::resource('item-ins', ItemInController::class);
+    Route::get('/get-items-by-category/{id}', [App\Http\Controllers\ItemInController::class, 'getItemsByCategory'])
+        ->name('item-ins.get-items');
 });
 
 require __DIR__ . '/auth.php';
