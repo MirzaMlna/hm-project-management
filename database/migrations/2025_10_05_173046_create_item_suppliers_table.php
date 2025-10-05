@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('item_suppliers', function (Blueprint $table) {
+            $table->id();
+            $table->string('code', 10)->unique(); // kode unik, misal SPL001
+            $table->string('supplier', 100);      // nama pemasok
+            $table->string('phone', 20)->nullable(); // nomor telepon (opsional)
+            $table->string('address', 255)->nullable(); // alamat pemasok
+            $table->text('description')->nullable(); // keterangan tambahan
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('item_suppliers');
+    }
+};

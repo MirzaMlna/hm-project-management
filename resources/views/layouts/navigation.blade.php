@@ -64,8 +64,8 @@
                                 <x-dropdown-link :href="route('items.index')">
                                     <i class="bi bi-nut me-2"></i>Jenis Barang
                                 </x-dropdown-link>
-                                <x-dropdown-link :href="route('workers.index')">
-                                    <i class="bi bi-nut me-2"></i>ٍStok Barang
+                                <x-dropdown-link :href="route('item-suppliers.index')">
+                                    <i class="bi bi-truck me-2"></i>Pemasok
                                 </x-dropdown-link>
                                 <div class="text-sm ms-3 font-bold">Coming Soon</div>
 
