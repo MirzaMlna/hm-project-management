@@ -19,10 +19,13 @@
             {{-- Card utama --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                {{-- Tombol Tambah --}}
-                <div class="flex justify-end items-end">
-                    <x-primary-button class="mt-6 mr-6" onclick="toggleCreateModal()">
-                        <i class="bi bi-plus-circle mr-2"></i>Tambah Barang
+                {{-- Header Section: Judul di kiri, tombol di kanan --}}
+                <div class="flex justify-between items-center px-6 mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                        <i class="bi bi-nut"></i> Jenis Barang
+                    </h3>
+                    <x-primary-button class="!bg-sky-700 hover:!bg-sky-800 !text-white" onclick="toggleCreateModal()">
+                        <i class="bi bi-plus-circle mr-2"></i>Tambah Jenis
                     </x-primary-button>
                 </div>
 
