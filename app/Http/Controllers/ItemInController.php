@@ -2,63 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ItemIn;
+use App\Models\Item;
+use App\Models\ItemStock;
+use App\Models\ItemSupplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ItemInController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $items = Item::orderBy('name')->get();
+        $suppliers = ItemSupplier::orderBy('name')->get();
+        $itemIns = ItemIn::with(['item', 'supplier'])->orderBy('purchase_date', 'desc')->paginate(10);
+
+        return view('item-ins.index', compact('itemIns', 'items', 'suppliers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'item_id' => 'required|exists:items,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'quantity' => 'required|integer|min:1',
+            'unit_price' => 'required|numeric|min:0',
+            'purchase_date' => 'required|date',
+            'recipt_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'note' => 'nullable|string',
+        ]);
+
+        $path = null;
+        if ($request->hasFile('recipt_photo')) {
+            $path = $request->file('recipt_photo')->store('receipts', 'public');
+        }
+
+        $total = $request->quantity * $request->unit_price;
+
+        // Simpan ke tabel item_ins
+        $itemIn = ItemIn::create([
+            'item_id' => $request->item_id,
+            'supplier_id' => $request->supplier_id,
+            'quantity' => $request->quantity,
+            'unit_price' => $request->unit_price,
+            'total_price' => $total,
+            'purchase_date' => $request->purchase_date,
+            'recipt_photo' => $path,
+            'note' => $request->note,
+        ]);
+
+        // Update stok otomatis
+        $stock = ItemStock::firstOrCreate(
+            ['item_id' => $request->item_id],
+            ['current_stock' => 0, 'minimum_stock' => 0, 'last_updated' => Carbon::now()]
+        );
+        $stock->increment('current_stock', $request->quantity);
+        $stock->update(['last_updated' => Carbon::now()]);
+
+        return redirect()->back()->with('success', 'Barang masuk berhasil disimpan dan stok diperbarui.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy(ItemIn $itemIn)
     {
-        //
-    }
+        if ($itemIn->recipt_photo && Storage::disk('public')->exists($itemIn->recipt_photo)) {
+            Storage::disk('public')->delete($itemIn->recipt_photo);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // Kurangi stok
+        $stock = ItemStock::where('item_id', $itemIn->item_id)->first();
+        if ($stock && $stock->current_stock >= $itemIn->quantity) {
+            $stock->decrement('current_stock', $itemIn->quantity);
+            $stock->update(['last_updated' => Carbon::now()]);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $itemIn->delete();
+        return redirect()->back()->with('success', 'Data barang masuk berhasil dihapus dan stok disesuaikan.');
     }
 }
