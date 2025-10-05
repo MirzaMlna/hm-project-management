@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerBonusController;
@@ -56,6 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('items', ItemController::class);
     // Item Supliers
     Route::resource('item-suppliers', ItemSupplierController::class);
+    // Item Stocks
+    Route::resource('item-stocks', ItemStockController::class);
+    Route::get('/get-items-by-category/{id}', [ItemStockController::class, 'getByCategory'])
+        ->name('items.byCategory');
 });
 
 require __DIR__ . '/auth.php';
