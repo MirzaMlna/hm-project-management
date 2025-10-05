@@ -71,6 +71,9 @@
                                     <i class="bi bi-box me-2"></i>Stok Barang
                                 </x-dropdown-link>
                                 <div class="text-sm ms-3 font-bold">Coming Soon</div>
+                                <x-dropdown-link :href="route('item-ins.index')">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Barang Masuk
+                                </x-dropdown-link>
 
                             </x-slot>
                         </x-dropdown>

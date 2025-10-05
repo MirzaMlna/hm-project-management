@@ -251,6 +251,7 @@
                             itemSelect.appendChild(opt);
                         }
                     })
+
                     .catch(() => {
                         const opt = document.createElement('option');
                         opt.textContent = 'Gagal memuat data';
