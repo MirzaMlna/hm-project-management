@@ -9,7 +9,9 @@ class ItemCategoryController extends Controller
 {
     public function index()
     {
-        $categories = ItemCategory::orderBy('id', 'desc')->get();
+        // ambil semua kategori dengan jumlah item-nya
+        $categories = ItemCategory::withCount('items')->orderBy('category')->get();
+
         return view('item-categories.index', compact('categories'));
     }
 

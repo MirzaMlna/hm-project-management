@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ItemCategoryController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerBonusController;
 use App\Http\Controllers\WorkerCategoryController;
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(function () {
 
     // Item Categories
     Route::resource('item-categories', ItemCategoryController::class);
+    // Items
+    Route::resource('items', ItemController::class);
 });
 
 require __DIR__ . '/auth.php';

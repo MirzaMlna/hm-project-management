@@ -61,11 +61,11 @@
                                 <x-dropdown-link :href="route('item-categories.index')">
                                     <i class="bi bi-list me-2"></i>Kategori Barang
                                 </x-dropdown-link>
-                                <x-dropdown-link :href="route('workers.index')">
-                                    <i class="bi bi-people me-2"></i>Jenis Barang
+                                <x-dropdown-link :href="route('items.index')">
+                                    <i class="bi bi-nut me-2"></i>Jenis Barang
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('workers.index')">
-                                    <i class="bi bi-people me-2"></i>ٍStok Barang
+                                    <i class="bi bi-nut me-2"></i>ٍStok Barang
                                 </x-dropdown-link>
                                 <div class="text-sm ms-3 font-bold">Coming Soon</div>
 
