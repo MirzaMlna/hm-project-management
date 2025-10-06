@@ -4,6 +4,7 @@ use App\Http\Controllers\DevelopmentPointController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemInController;
+use App\Http\Controllers\ItemOutController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ProfileController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkerPresenceController;
 use App\Http\Controllers\WorkerPresenceScheduleController;
+use App\Models\Item;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -69,6 +71,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('item-ins', ItemInController::class);
     Route::get('/get-items-by-category/{id}', [ItemInController::class, 'getItemsByCategory'])
         ->name('item-ins.get-items');
+    // Outgoing Items
+    Route::get('/get-items-by-category/{id}', [ItemOutController::class, 'getItemsByCategory']);
+    Route::resource('item-outs', ItemOutController::class);
 });
 
 require __DIR__ . '/auth.php';

@@ -77,6 +77,9 @@
                                 <x-dropdown-link :href="route('item-ins.index')">
                                     <i class="bi bi-box-arrow-right me-2"></i>Barang Masuk
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('item-outs.index')">
+                                    <i class="bi bi-box-arrow-left me-2"></i>Barang Keluar
+                                </x-dropdown-link>
 
                             </x-slot>
                         </x-dropdown>
