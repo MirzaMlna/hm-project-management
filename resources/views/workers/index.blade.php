@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Tukang
             </h2>
             <a href="{{ route('workers.inactive') }}">
-                <x-primary-button class="!bg-gray-500 hover:!bg-gray-600 !text-white">
+                <x-primary-button class="w-full sm:w-auto !bg-gray-500 hover:!bg-gray-600 !text-white">
                     <i class="bi bi-person-slash me-2"></i> Tukang Nonaktif
                 </x-primary-button>
             </a>
@@ -21,7 +21,6 @@
                     ✅ {{ session('success') }}
                 </div>
             @endif
-
             @if (session('error'))
                 <div id="alert-error"
                     class="mb-4 p-4 rounded bg-red-100 text-red-800 shadow-sm transition-opacity duration-500">
@@ -42,7 +41,6 @@
                         <i class="bi bi-people text-blue-600 text-2xl"></i>
                     </div>
                 </div>
-
                 <!-- Active Workers -->
                 <div
                     class="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500 flex justify-between items-center">
@@ -54,7 +52,6 @@
                         <i class="bi bi-check-circle text-green-600 text-2xl"></i>
                     </div>
                 </div>
-
                 <!-- Daily Salary -->
                 <div
                     class="bg-white rounded-xl shadow-md p-5 border-l-4 border-amber-500 flex justify-between items-center">
@@ -72,28 +69,28 @@
 
             <!-- Tabel Tukang -->
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-3">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
                         <i class="bi bi-person-check"></i> Daftar Tukang Aktif
                     </h3>
-                    <div class="flex flex-wrap items-end gap-3">
+                    <div class="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
                         <button onclick="openImportModal()"
-                            class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center gap-2">
+                            class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center gap-2 w-full sm:w-auto">
                             <i class="bi bi-upload"></i>
                         </button>
                         <a href="{{ route('workers.create') }}"
-                            class="px-4 py-2 bg-sky-800 hover:bg-sky-700 text-white rounded flex items-center gap-2">
+                            class="px-4 py-2 bg-sky-800 hover:bg-sky-700 text-white rounded flex items-center gap-2 w-full sm:w-auto">
                             <i class="bi bi-person-plus"></i>
                         </a>
                         <a href="{{ route('workers.printAll') }}"
-                            class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded flex items-center gap-2">
+                            class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded flex items-center gap-2 w-full sm:w-auto">
                             <i class="bi bi-printer"></i>
                         </a>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto border rounded-lg">
-                    <table class="min-w-full text-sm">
+                    <table class="min-w-full text-xs">
                         <thead class="bg-sky-800 text-white">
                             <tr>
                                 <th class="px-4 py-3">NO</th>
@@ -108,7 +105,7 @@
                         </thead>
                         <tbody>
                             @forelse ($workers as $index => $worker)
-                                <tr class="text-center border-b">
+                                <tr class="text-center border-b hover:bg-gray-50">
                                     <td class="px-4 py-2">{{ $workers->firstItem() + $index }}</td>
                                     <td class="px-4 py-2 text-gray-500">{{ $worker->category->category ?? '-' }}</td>
                                     <td class="px-4 py-2 font-semibold">{{ $worker->name }}</td>
@@ -144,8 +141,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="py-4 text-center text-gray-500">Tidak ada tukang
-                                        ditambahkan.</td>
+                                    <td colspan="8" class="py-4 text-center text-gray-500">
+                                        Tidak ada tukang ditambahkan.
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -160,8 +158,9 @@
     </div>
 
     <!-- Modal Nonaktifkan -->
-    <div id="deactivateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
+    <div id="deactivateModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+        <div class="bg-white rounded-xl shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <h3 class="text-lg mb-4 font-semibold">Nonaktifkan Tukang</h3>
             <p class="mb-2">Nama: <span id="workerNameModal" class="font-bold text-red-600"></span></p>
             <form id="deactivateForm" method="POST" action="">
@@ -173,18 +172,20 @@
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-red-200" rows="3"
                         placeholder="Masukkan alasan nonaktifkan tukang..."></textarea>
                 </div>
-                <div class="flex justify-end gap-3">
+                <div class="flex flex-col sm:flex-row justify-end gap-3">
                     <button type="button" onclick="closeDeactivateModal()"
-                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Batal</button>
+                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Nonaktifkan</button>
+                        class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 w-full sm:w-auto">Nonaktifkan</button>
                 </div>
             </form>
         </div>
     </div>
+
     <!-- Modal Import Excel -->
-    <div id="importModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
+    <div id="importModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+        <div class="bg-white rounded-xl shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <h3 class="text-lg mb-4 font-semibold">Import Tukang dari Excel</h3>
             <form action="{{ route('workers.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -193,11 +194,11 @@
                     <input type="file" name="file" required
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:ring focus:ring-amber-200">
                 </div>
-                <div class="flex justify-end gap-3">
+                <div class="flex flex-col sm:flex-row justify-end gap-3">
                     <button type="button" onclick="closeImportModal()"
-                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Batal</button>
+                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 rounded bg-amber-600 text-white hover:bg-amber-700">Upload</button>
+                        class="px-4 py-2 rounded bg-amber-600 text-white hover:bg-amber-700 w-full sm:w-auto">Upload</button>
                 </div>
             </form>
         </div>
@@ -225,15 +226,15 @@
     function closeImportModal() {
         document.getElementById('importModal').classList.add('hidden');
     }
-    // Hilangkan alert setelah 5 detik (5000 ms)
+
+    // Auto-hide alert
     setTimeout(() => {
         const successAlert = document.getElementById('alert-success');
         const errorAlert = document.getElementById('alert-error');
-
         [successAlert, errorAlert].forEach(alert => {
             if (alert) {
-                alert.classList.add('opacity-0'); // efek fade
-                setTimeout(() => alert.remove(), 500); // hapus setelah animasi
+                alert.classList.add('opacity-0');
+                setTimeout(() => alert.remove(), 500);
             }
         });
     }, 5000);

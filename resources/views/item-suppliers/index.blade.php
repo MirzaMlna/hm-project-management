@@ -18,12 +18,12 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 {{-- Header kiri-kanan --}}
-                <div class="flex justify-between items-center px-6 mt-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center px-6 mt-6 gap-3">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-truck text-sky-600"></i> Daftar Pemasok
                     </h3>
 
-                    <x-primary-button onclick="toggleCreateModal()">
+                    <x-primary-button class="w-full sm:w-auto" onclick="toggleCreateModal()">
                         <i class="bi bi-plus-circle mr-2"></i>Tambah Pemasok
                     </x-primary-button>
                 </div>
@@ -31,7 +31,7 @@
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
                     <div class="overflow-x-auto mt-2">
-                        <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                        <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                             <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
                                     <th class="px-4 py-3 text-center w-12">#</th>
@@ -49,21 +49,11 @@
                                         <td class="px-4 py-3 text-center">
                                             {{ $suppliers->firstItem() + $index }}
                                         </td>
-                                        <td class="px-4 py-3">
-                                            {{ $supplier->code }}
-                                        </td>
-                                        <td class="px-4 py-3 font-bold text-gray-800">
-                                            {{ $supplier->supplier }}
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            {{ $supplier->phone ?? '-' }}
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            {{ $supplier->address ?? '-' }}
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            {{ $supplier->description ?? '-' }}
-                                        </td>
+                                        <td class="px-4 py-3">{{ $supplier->code }}</td>
+                                        <td class="px-4 py-3 font-bold text-gray-800">{{ $supplier->supplier }}</td>
+                                        <td class="px-4 py-3">{{ $supplier->phone ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $supplier->address ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $supplier->description ?? '-' }}</td>
                                         <td class="px-4 py-3 text-center space-x-2">
                                             <button type="button" class="btn-edit" data-id="{{ $supplier->id }}"
                                                 data-supplier="{{ e($supplier->supplier) }}"
@@ -73,7 +63,6 @@
                                                 <i
                                                     class="bi bi-pencil-square text-yellow-500 hover:text-yellow-600"></i>
                                             </button>
-
                                             <form action="{{ route('item-suppliers.destroy', $supplier->id) }}"
                                                 method="POST" class="inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus pemasok ini?')">
@@ -94,7 +83,6 @@
                                 @endforelse
                             </tbody>
                         </table>
-
                     </div>
 
                     {{-- PAGINASI --}}
@@ -104,14 +92,14 @@
                         </div>
                     @endif
                 </div>
-
             </div>
         </div>
     </div>
 
     {{-- Modal Tambah --}}
-    <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="createModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-lg shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <button onclick="toggleCreateModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
             <h3 class="text-lg font-semibold mb-4">Tambah Pemasok</h3>
@@ -134,19 +122,19 @@
                     <label class="block text-sm font-medium mb-1">Keterangan</label>
                     <textarea name="description" class="w-full border-gray-300 rounded p-2" rows="3"></textarea>
                 </div>
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleCreateModal()"
-                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700">Simpan</button>
+                        class="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700 w-full sm:w-auto">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
     {{-- Modal Edit --}}
-    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-lg shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <button onclick="toggleEditModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
             <h3 class="text-lg font-semibold mb-4">Edit Pemasok</h3>
@@ -172,11 +160,11 @@
                     <label class="block text-sm font-medium mb-1">Keterangan</label>
                     <textarea id="edit_description" name="description" class="w-full border-gray-300 rounded p-2" rows="3"></textarea>
                 </div>
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleEditModal()"
-                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">Update</button>
+                        class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 w-full sm:w-auto">Update</button>
                 </div>
             </form>
         </div>

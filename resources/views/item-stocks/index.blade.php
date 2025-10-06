@@ -20,12 +20,12 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header kiri-kanan --}}
-                <div class="flex justify-between items-center px-6 mt-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center px-6 mt-6 gap-3">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-boxes text-sky-600"></i> Daftar Stok Barang
                     </h3>
 
-                    <x-primary-button onclick="toggleCreateModal()">
+                    <x-primary-button class="w-full sm:w-auto" onclick="toggleCreateModal()">
                         <i class="bi bi-plus-circle mr-2"></i>Tambah / Update Stok
                     </x-primary-button>
                 </div>
@@ -47,7 +47,7 @@
 
                             {{-- Tabel stok --}}
                             <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-600">
+                                <table class="min-w-full text-sm text-left text-gray-600">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                                         <tr>
                                             <th class="px-4 py-3 text-center w-12">#</th>
@@ -60,9 +60,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($categoryStocks as $index => $stock)
-                                            <tr
-                                                class="bg-white border-b border-gray-200 text-gray-900 hover:bg-gray-50">
+                                        @forelse ($categoryStocks as $stock)
+                                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50">
                                                 <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
                                                 <td class="px-4 py-3 font-semibold">{{ $stock->item->name ?? '-' }}</td>
                                                 <td class="px-4 py-3">{{ $stock->item->unit ?? '-' }}</td>
@@ -115,8 +114,9 @@
     </div>
 
     {{-- Modal Tambah --}}
-    <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="createModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-lg shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <button onclick="toggleCreateModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
 
@@ -156,20 +156,19 @@
                         class="w-full border-gray-300 rounded p-2">
                 </div>
 
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleCreateModal()"
-                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">Batal</button>
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded">Simpan</button>
+                        class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded w-full sm:w-auto">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-
     {{-- Modal Edit --}}
-    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-lg shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <button onclick="toggleEditModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
             <h3 class="text-lg font-semibold mb-4">Edit Stok Barang</h3>
@@ -187,11 +186,11 @@
                     <input id="edit_minimum" type="number" name="minimum_stock" min="0"
                         class="w-full border-gray-300 rounded p-2">
                 </div>
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleEditModal()"
-                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">Batal</button>
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded">Update</button>
+                        class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded w-full sm:w-auto">Update</button>
                 </div>
             </form>
         </div>
@@ -251,7 +250,6 @@
                             itemSelect.appendChild(opt);
                         }
                     })
-
                     .catch(() => {
                         const opt = document.createElement('option');
                         opt.textContent = 'Gagal memuat data';

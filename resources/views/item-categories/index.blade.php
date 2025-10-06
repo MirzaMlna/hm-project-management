@@ -26,22 +26,20 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                {{-- Tombol Tambah --}}
-                <div class="flex justify-between items-center px-6 mt-6">
+                {{-- Header + Tombol Tambah --}}
+                <div class="flex flex-col md:flex-row justify-between md:items-center px-6 mt-6 gap-3">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-list"></i> Kategori Barang
                     </h3>
-                    <div class="flex justify-end items-end">
-                        <x-primary-button class="mt-6 mr-6" onclick="toggleCreateModal()">
-                            <i class="bi bi-plus-circle mr-2"></i>Tambah Kategori
-                        </x-primary-button>
-                    </div>
+                    <x-primary-button class="w-full md:w-auto" onclick="toggleCreateModal()">
+                        <i class="bi bi-plus-circle mr-2"></i>Tambah Kategori
+                    </x-primary-button>
                 </div>
 
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
                     <div class="overflow-x-auto rounded">
-                        <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                        <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                             <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
                                     <th class="px-4 py-3 text-center w-12">#</th>
@@ -88,17 +86,17 @@
                                 @endforelse
                             </tbody>
                         </table>
-
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
     {{-- Modal Tambah --}}
-    <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="createModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div
+            class="bg-white rounded-lg shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl p-6 relative transform transition duration-200">
             <button onclick="toggleCreateModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
 
@@ -112,12 +110,13 @@
                         class="w-full border-gray-300 rounded focus:ring focus:ring-sky-200 p-2"
                         placeholder="Contoh: Paku">
                 </div>
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleCreateModal()"
-                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800">
+                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 w-full sm:w-auto">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 rounded bg-sky-600 hover:bg-sky-700 text-white">
+                    <button type="submit"
+                        class="px-4 py-2 rounded bg-sky-600 hover:bg-sky-700 text-white w-full sm:w-auto">
                         Simpan
                     </button>
                 </div>
@@ -126,8 +125,9 @@
     </div>
 
     {{-- Modal Edit --}}
-    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div
+            class="bg-white rounded-lg shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl p-6 relative transform transition duration-200">
             <button onclick="toggleEditModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
 
@@ -141,12 +141,13 @@
                     <input type="text" id="edit_category" name="category" required
                         class="w-full border-gray-300 rounded focus:ring focus:ring-amber-200 p-2">
                 </div>
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleEditModal()"
-                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800">
+                        class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800 w-full sm:w-auto">
                         Batal
                     </button>
-                    <button type="submit" class="px-4 py-2 rounded bg-amber-500 hover:bg-amber-600 text-white">
+                    <button type="submit"
+                        class="px-4 py-2 rounded bg-amber-500 hover:bg-amber-600 text-white w-full sm:w-auto">
                         Update
                     </button>
                 </div>
@@ -154,7 +155,7 @@
         </div>
     </div>
 
-    {{-- Script Modal --}}
+    {{-- Script Modal + Auto Hide Alert --}}
     <script>
         function toggleCreateModal() {
             document.getElementById('createModal').classList.toggle('hidden');
@@ -169,6 +170,7 @@
                 document.getElementById('editForm').action = `/item-categories/${id}`;
             }
         }
+
         // Hilangkan alert setelah 5 detik (5000 ms)
         setTimeout(() => {
             const successAlert = document.getElementById('alert-success');

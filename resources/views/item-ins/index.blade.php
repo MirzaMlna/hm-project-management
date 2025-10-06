@@ -25,31 +25,33 @@
                         <i class="bi bi-box-arrow-in-down text-sky-600"></i> Daftar Barang Masuk
                     </h3>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
                         {{-- Filter Bulan --}}
-                        <form method="GET" action="{{ route('item-ins.index') }}" class="flex items-center gap-2">
-                            <label for="month" class="text-sm font-medium text-gray-700">Filter Bulan:</label>
+                        <form method="GET" action="{{ route('item-ins.index') }}"
+                            class="flex items-center gap-2 w-full sm:w-auto">
+                            <label for="month" class="text-sm font-medium text-gray-700 whitespace-nowrap">Filter
+                                Bulan:</label>
                             <input type="month" id="month" name="month" value="{{ $selectedMonth }}"
-                                class="border-gray-300 rounded p-2 text-sm" onchange="this.form.submit()">
+                                class="border-gray-300 rounded p-2 text-sm w-full sm:w-auto"
+                                onchange="this.form.submit()">
                         </form>
 
-                        <x-primary-button onclick="toggleCreateModal()">
+                        <x-primary-button class="w-full sm:w-auto" onclick="toggleCreateModal()">
                             <i class="bi bi-plus-circle mr-2"></i>Tambah Barang Masuk
                         </x-primary-button>
                     </div>
                 </div>
 
-
                 {{-- Tabel --}}
                 <div class="p-6 overflow-x-auto">
-                    <div class=" mb-2 text-sm text-gray-600 italic">
+                    <div class="mb-2 text-sm text-gray-600 italic">
                         Menampilkan data bulan
                         <span class="font-semibold text-sky-700">
                             {{ \Carbon\Carbon::parse($selectedMonth . '-01')->translatedFormat('F Y') }}
                         </span>
                     </div>
 
-                    <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                    <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                         <thead class="text-xs text-white uppercase bg-sky-700">
                             <tr>
                                 <th class="px-4 py-3 text-center w-12">#</th>
@@ -73,7 +75,8 @@
                                     <td class="px-4 py-3">{{ $in->supplier->supplier ?? '-' }}</td>
                                     <td class="px-4 py-3 text-center">{{ $in->quantity }}</td>
                                     <td class="px-4 py-3 text-center">
-                                        Rp{{ number_format($in->unit_price, 0, ',', '.') }}</td>
+                                        Rp{{ number_format($in->unit_price, 0, ',', '.') }}
+                                    </td>
                                     <td class="px-4 py-3 text-center font-semibold text-sky-700">
                                         Rp{{ number_format($in->total_price, 0, ',', '.') }}
                                     </td>
@@ -121,8 +124,9 @@
     </div>
 
     {{-- Modal Tambah --}}
-    <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+    <div id="createModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-lg shadow-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl p-6 relative">
             <button onclick="toggleCreateModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
 
@@ -162,7 +166,7 @@
                 </div>
 
                 {{-- Jumlah & Harga --}}
-                <div class="grid grid-cols-2 gap-4 mb-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                     <div>
                         <label class="block text-sm font-medium mb-1">Jumlah</label>
                         <input type="number" name="quantity" min="1" required
@@ -192,15 +196,11 @@
                 {{-- Foto Nota --}}
                 <div class="mb-3">
                     <label class="block text-sm font-medium mb-1">Foto Nota (opsional)</label>
-
-                    {{-- Input dari kamera --}}
                     <input type="file" name="recipt_photo" accept="image/*" capture="environment"
                         class="w-full border-gray-300 rounded p-2 mb-2">
-
                     <div class="text-xs text-gray-500">Bisa pilih dari galeri atau langsung ambil foto dengan kamera.
                     </div>
                 </div>
-
 
                 {{-- Catatan --}}
                 <div class="mb-3">
@@ -209,14 +209,13 @@
                         placeholder="Tuliskan keterangan tambahan jika perlu..."></textarea>
                 </div>
 
-                <div class="flex justify-end gap-2">
+                <div class="flex flex-col sm:flex-row justify-end gap-2">
                     <button type="button" onclick="toggleCreateModal()"
-                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">Batal</button>
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded w-full sm:w-auto">Batal</button>
                     <button type="submit"
-                        class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded">Simpan</button>
+                        class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded w-full sm:w-auto">Simpan</button>
                 </div>
             </form>
-
         </div>
     </div>
 
