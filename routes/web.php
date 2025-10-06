@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DevelopmentPointController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemInController;
@@ -58,13 +59,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('items', ItemController::class);
     // Item Supliers
     Route::resource('item-suppliers', ItemSupplierController::class);
+    // Development Points
+    Route::resource('development-points', DevelopmentPointController::class);
     // Item Stocks
     Route::get('/get-items-by-category/{id}', [ItemStockController::class, 'getByCategory'])
         ->name('items.byCategory');
     Route::resource('item-stocks', ItemStockController::class);
     // Incoming Items
     Route::resource('item-ins', ItemInController::class);
-    Route::get('/get-items-by-category/{id}', [App\Http\Controllers\ItemInController::class, 'getItemsByCategory'])
+    Route::get('/get-items-by-category/{id}', [ItemInController::class, 'getItemsByCategory'])
         ->name('item-ins.get-items');
 });
 
