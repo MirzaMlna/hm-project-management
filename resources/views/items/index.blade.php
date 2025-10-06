@@ -40,15 +40,15 @@
 
                             {{-- Tabel barang --}}
                             <div class="overflow-x-auto mt-2">
-                                <table class="min-w-full border border-gray-200 rounded text-sm text-gray-700">
-                                    <thead class="bg-sky-700 text-white uppercase text-xs tracking-wider">
+                                <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                                    <thead class="text-xs text-white uppercase bg-sky-700">
                                         <tr>
-                                            <th class="px-4 py-3 text-center border border-gray-300 w-12">#</th>
-                                            <th class="px-4 py-3 border border-gray-300">Kode</th>
-                                            <th class="px-4 py-3 border border-gray-300">Jenis</th>
-                                            <th class="px-4 py-3 border border-gray-300 text-center">Satuan</th>
-                                            <th class="px-4 py-3 border border-gray-300 text-center">Foto</th>
-                                            <th class="px-4 py-3 border border-gray-300 text-center w-24">Aksi</th>
+                                            <th class="px-4 py-3 text-center w-12">#</th>
+                                            <th class="px-4 py-3">Kode</th>
+                                            <th class="px-4 py-3">Jenis</th>
+                                            <th class="px-4 py-3 text-center">Satuan</th>
+                                            <th class="px-4 py-3 text-center">Foto</th>
+                                            <th class="px-4 py-3 text-center w-24">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -57,20 +57,20 @@
                                         @endphp
 
                                         @forelse ($categoryItems as $index => $item)
-                                            <tr
-                                                class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }} border-t border-gray-200 hover:bg-gray-100">
-                                                <td
-                                                    class="px-4 py-3 text-center border border-gray-200 font-medium text-gray-800">
+                                            <tr class="border-b hover:bg-gray-50">
+                                                <td class="px-4 py-3 text-center font-medium text-gray-800">
                                                     {{ $loop->iteration }}
                                                 </td>
-                                                <td class="px-4 py-3 border border-gray-200">{{ $item->code }}</td>
-                                                <td
-                                                    class="px-4 py-3 border border-gray-200 font-semibold text-gray-900">
+                                                <td class="px-4 py-3">
+                                                    {{ $item->code }}
+                                                </td>
+                                                <td class="px-4 py-3 font-semibold text-gray-900">
                                                     {{ $item->name }}
                                                 </td>
-                                                <td class="px-4 py-3 text-center border border-gray-200">
-                                                    {{ $item->unit }}</td>
-                                                <td class="px-4 py-3 text-center border border-gray-200">
+                                                <td class="px-4 py-3 text-center">
+                                                    {{ $item->unit }}
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
                                                     @if ($item->photo)
                                                         <img src="{{ asset('storage/' . $item->photo) }}"
                                                             class="w-12 h-12 rounded object-cover border mx-auto">
@@ -78,7 +78,7 @@
                                                         <span class="text-gray-400">-</span>
                                                     @endif
                                                 </td>
-                                                <td class="px-4 py-3 text-center border border-gray-200 space-x-2">
+                                                <td class="px-4 py-3 text-center space-x-2">
                                                     <button type="button" class="btn-edit"
                                                         data-id="{{ $item->id }}" data-name="{{ e($item->name) }}"
                                                         data-unit="{{ e($item->unit) }}"
@@ -103,13 +103,14 @@
                                         @empty
                                             <tr>
                                                 <td colspan="6"
-                                                    class="text-center py-4 text-gray-500 italic bg-gray-50 border-t border-gray-200">
+                                                    class="text-center py-4 text-gray-500 italic bg-gray-50">
                                                     Tidak ada barang dalam kategori ini.
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+
                             </div>
 
                         </div>

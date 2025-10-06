@@ -33,47 +33,47 @@
                     </h3>
                     <div class="flex justify-end items-end">
                         <x-primary-button class="mt-6 mr-6" onclick="toggleCreateModal()">
-                            <i class="bi bi-plus-circle mr-2"></i>Tambah Kategori Barang
+                            <i class="bi bi-plus-circle mr-2"></i>Tambah Kategori
                         </x-primary-button>
                     </div>
                 </div>
 
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full border border-gray-200 rounded text-sm text-gray-700">
-                            <thead class="bg-sky-700 text-white uppercase text-xs tracking-wider">
+                    <div class="overflow-x-auto rounded">
+                        <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                            <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
-                                    <th class="px-4 py-3 text-center border border-gray-300 w-12">#</th>
-                                    <th class="px-4 py-3 border border-gray-300 text-left">Kategori</th>
-                                    <th class="px-4 py-3 border border-gray-300 text-center">Jumlah Jenis</th>
-                                    <th class="px-4 py-3 border border-gray-300 text-center w-24">Aksi</th>
+                                    <th class="px-4 py-3 text-center w-12">#</th>
+                                    <th class="px-4 py-3">Kategori</th>
+                                    <th class="px-4 py-3 text-center">Jumlah Jenis</th>
+                                    <th class="px-4 py-3 text-center w-24">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($categories as $index => $category)
-                                    <tr class="bg-white hover:bg-gray-50 border-t border-gray-200">
-                                        <td
-                                            class="px-4 py-3 text-center border border-gray-200 font-medium text-gray-800">
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-center font-medium text-gray-800">
                                             {{ $index + 1 }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200">{{ $category->category }}</td>
-                                        <td
-                                            class="px-4 py-3 text-center border border-gray-200 font-semibold text-gray-800">
+                                        <td class="px-4 py-3">
+                                            {{ $category->category }}
+                                        </td>
+                                        <td class="px-4 py-3 text-center font-semibold text-gray-800">
                                             {{ $category->items_count ?? 0 }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200 text-center space-x-3">
+                                        <td class="px-4 py-3 text-center space-x-3">
                                             <button
                                                 onclick="toggleEditModal({{ $category->id }}, '{{ $category->category }}')"
                                                 class="text-yellow-500 hover:text-yellow-600">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <form action="{{ route('item-categories.destroy', $category->id) }}"
-                                                method="POST" class="inline">
+                                                method="POST" class="inline"
+                                                onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-600"
-                                                    onclick="return confirm('Yakin ingin menghapus kategori ini?')">
+                                                <button type="submit" class="text-red-500 hover:text-red-600">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
                                             </form>
@@ -81,13 +81,14 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-gray-500 italic">
+                                        <td colspan="4" class="text-center py-4 text-gray-500 italic bg-gray-50">
                                             Belum ada data kategori.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
+
                     </div>
 
                 </div>

@@ -31,35 +31,40 @@
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
                     <div class="overflow-x-auto mt-2">
-                        <table class="min-w-full border border-gray-200 rounded text-sm text-gray-700">
-                            <thead class="bg-sky-700 text-white uppercase text-xs tracking-wider">
+                        <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
+                            <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
-                                    <th class="px-4 py-3 text-center border border-gray-300 w-12">#</th>
-                                    <th class="px-4 py-3 border border-gray-300">Kode</th>
-                                    <th class="px-4 py-3 border border-gray-300">Nama Pemasok</th>
-                                    <th class="px-4 py-3 border border-gray-300">Telepon</th>
-                                    <th class="px-4 py-3 border border-gray-300">Alamat</th>
-                                    <th class="px-4 py-3 border border-gray-300">Keterangan</th>
-                                    <th class="px-4 py-3 border border-gray-300 text-center w-24">Aksi</th>
+                                    <th class="px-4 py-3 text-center w-12">#</th>
+                                    <th class="px-4 py-3">Kode</th>
+                                    <th class="px-4 py-3">Nama Pemasok</th>
+                                    <th class="px-4 py-3">Telepon</th>
+                                    <th class="px-4 py-3">Alamat</th>
+                                    <th class="px-4 py-3">Keterangan</th>
+                                    <th class="px-4 py-3 text-center w-24">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($suppliers as $index => $supplier)
-                                    <tr
-                                        class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }} border-t border-gray-200 hover:bg-gray-100">
-                                        <td class="px-4 py-3 text-center border border-gray-200">
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-center">
                                             {{ $suppliers->firstItem() + $index }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200">{{ $supplier->code }}
+                                        <td class="px-4 py-3">
+                                            {{ $supplier->code }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200 font-bold">{{ $supplier->supplier }}
+                                        <td class="px-4 py-3 font-bold text-gray-800">
+                                            {{ $supplier->supplier }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200">{{ $supplier->phone ?? '-' }}</td>
-                                        <td class="px-4 py-3 border border-gray-200">{{ $supplier->address ?? '-' }}
+                                        <td class="px-4 py-3">
+                                            {{ $supplier->phone ?? '-' }}
                                         </td>
-                                        <td class="px-4 py-3 border border-gray-200">{{ $supplier->description ?? '-' }}
+                                        <td class="px-4 py-3">
+                                            {{ $supplier->address ?? '-' }}
                                         </td>
-                                        <td class="px-4 py-3 text-center border border-gray-200 space-x-2">
+                                        <td class="px-4 py-3">
+                                            {{ $supplier->description ?? '-' }}
+                                        </td>
+                                        <td class="px-4 py-3 text-center space-x-2">
                                             <button type="button" class="btn-edit" data-id="{{ $supplier->id }}"
                                                 data-supplier="{{ e($supplier->supplier) }}"
                                                 data-phone="{{ e($supplier->phone) }}"
@@ -68,6 +73,7 @@
                                                 <i
                                                     class="bi bi-pencil-square text-yellow-500 hover:text-yellow-600"></i>
                                             </button>
+
                                             <form action="{{ route('item-suppliers.destroy', $supplier->id) }}"
                                                 method="POST" class="inline"
                                                 onsubmit="return confirm('Yakin ingin menghapus pemasok ini?')">
@@ -81,13 +87,14 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-gray-500 italic">
+                                        <td colspan="7" class="text-center py-4 text-gray-500 italic bg-gray-50">
                                             Belum ada pemasok.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
+
                     </div>
 
                     {{-- PAGINASI --}}
