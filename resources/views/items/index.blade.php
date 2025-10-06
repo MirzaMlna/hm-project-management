@@ -25,7 +25,7 @@
                         <i class="bi bi-nut"></i> Jenis Barang
                     </h3>
                     <x-primary-button class="!bg-sky-700 hover:!bg-sky-800 !text-white" onclick="toggleCreateModal()">
-                        <i class="bi bi-plus-circle mr-2"></i>Tambah Jenis
+                        <i class="bi bi-plus-circle"></i>
                     </x-primary-button>
                 </div>
 

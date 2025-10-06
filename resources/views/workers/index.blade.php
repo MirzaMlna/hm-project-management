@@ -1,15 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+        <div class="flex justify-between items-center gap-3">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Tukang
             </h2>
             <a href="{{ route('workers.inactive') }}">
-                <x-primary-button class="w-full sm:w-auto !bg-gray-500 hover:!bg-gray-600 !text-white">
+                <x-primary-button class="!bg-gray-500 hover:!bg-gray-600 !text-white">
                     <i class="bi bi-person-slash me-2"></i> Tukang Nonaktif
                 </x-primary-button>
             </a>
         </div>
+
     </x-slot>
 
     <div class="py-6">
@@ -69,25 +70,26 @@
 
             <!-- Tabel Tukang -->
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4 gap-3">
+                <div class="flex justify-between items-center mb-4 px-1 gap-3">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
                         <i class="bi bi-person-check"></i> Daftar Tukang Aktif
                     </h3>
-                    <div class="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
+                    <div class="flex items-center gap-2">
                         <button onclick="openImportModal()"
-                            class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center gap-2 w-full sm:w-auto">
+                            class="px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center justify-center">
                             <i class="bi bi-upload"></i>
                         </button>
                         <a href="{{ route('workers.create') }}"
-                            class="px-4 py-2 bg-sky-800 hover:bg-sky-700 text-white rounded flex items-center gap-2 w-full sm:w-auto">
+                            class="px-3 py-2 bg-sky-800 hover:bg-sky-700 text-white rounded flex items-center justify-center">
                             <i class="bi bi-person-plus"></i>
                         </a>
                         <a href="{{ route('workers.printAll') }}"
-                            class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded flex items-center gap-2 w-full sm:w-auto">
+                            class="px-3 py-2 bg-green-600 hover:bg-green-500 text-white rounded flex items-center justify-center">
                             <i class="bi bi-printer"></i>
                         </a>
                     </div>
                 </div>
+
 
                 <div class="overflow-x-auto border rounded-lg">
                     <table class="min-w-full text-xs">

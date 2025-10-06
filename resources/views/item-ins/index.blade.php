@@ -20,27 +20,34 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header kiri-kanan --}}
-                <div class="flex flex-col md:flex-row md:justify-between md:items-center px-6 mt-6 gap-3">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 mt-6 gap-3">
+                    {{-- Judul --}}
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-box-arrow-in-down text-sky-600"></i> Daftar Barang Masuk
                     </h3>
 
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                    {{-- Bagian kanan: filter + tombol tambah --}}
+                    <div class="flex flex-row items-center gap-3 w-full sm:w-auto">
                         {{-- Filter Bulan --}}
                         <form method="GET" action="{{ route('item-ins.index') }}"
                             class="flex items-center gap-2 w-full sm:w-auto">
-                            <label for="month" class="text-sm font-medium text-gray-700 whitespace-nowrap">Filter
-                                Bulan:</label>
+                            <label for="month" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                                Filter Bulan:
+                            </label>
                             <input type="month" id="month" name="month" value="{{ $selectedMonth }}"
                                 class="border-gray-300 rounded p-2 text-sm w-full sm:w-auto"
                                 onchange="this.form.submit()">
                         </form>
 
-                        <x-primary-button class="w-full sm:w-auto" onclick="toggleCreateModal()">
-                            <i class="bi bi-plus-circle mr-2"></i>Tambah Barang Masuk
+                        {{-- Tombol hanya ikon --}}
+                        <x-primary-button class="w-10 h-10 flex items-center justify-center"
+                            onclick="toggleCreateModal()" title="Tambah Barang Masuk">
+                            <i class="bi bi-plus-circle text-lg"></i>
                         </x-primary-button>
                     </div>
                 </div>
+
+
 
                 {{-- Tabel --}}
                 <div class="p-6 overflow-x-auto">

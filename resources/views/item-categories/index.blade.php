@@ -27,14 +27,15 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header + Tombol Tambah --}}
-                <div class="flex flex-col md:flex-row justify-between md:items-center px-6 mt-6 gap-3">
+                <div class="flex justify-between items-center px-6 mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-list"></i> Kategori Barang
                     </h3>
-                    <x-primary-button class="w-full md:w-auto" onclick="toggleCreateModal()">
-                        <i class="bi bi-plus-circle mr-2"></i>Tambah Kategori
+                    <x-primary-button onclick="toggleCreateModal()">
+                        <i class="bi bi-plus-circle"></i>
                     </x-primary-button>
                 </div>
+
 
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">

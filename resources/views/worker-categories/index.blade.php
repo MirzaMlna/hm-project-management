@@ -25,14 +25,15 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header + tombol tambah --}}
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center px-6 mt-6 gap-3">
+                <div class="flex justify-between items-center px-6 mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-people text-sky-600"></i> Daftar Kategori Tukang
                     </h3>
-                    <x-primary-button class="w-full sm:w-auto" onclick="toggleCreateModal()">
+                    <x-primary-button onclick="toggleCreateModal()" title="Tambah Kategori Tukang">
                         <i class="bi bi-plus-circle"></i>
                     </x-primary-button>
                 </div>
+
 
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
