@@ -2,63 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DevelopmentPoint;
 use Illuminate\Http\Request;
 
 class DevelopmentPointController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $points = DevelopmentPoint::latest()->paginate(10);
+        return view('development-points.index', compact('points'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('development-points.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'development_point' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        DevelopmentPoint::create($request->only('development_point', 'description'));
+
+        return redirect()->route('development-points.index')->with('success', 'Titik pembangunan berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(DevelopmentPoint $developmentPoint)
     {
-        //
+        return view('development-points.edit', compact('developmentPoint'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, DevelopmentPoint $developmentPoint)
     {
-        //
+        $request->validate([
+            'development_point' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $developmentPoint->update($request->only('development_point', 'description'));
+
+        return redirect()->route('development-points.index')->with('success', 'Titik pembangunan berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(DevelopmentPoint $developmentPoint)
     {
-        //
-    }
+        $developmentPoint->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('development-points.index')->with('success', 'Titik pembangunan berhasil dihapus.');
     }
 }

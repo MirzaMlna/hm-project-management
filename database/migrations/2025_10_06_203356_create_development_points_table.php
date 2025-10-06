@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('development_points', function (Blueprint $table) {
             $table->id();
+            $table->string('development_point'); // Nama titik pembangunan
+            $table->text('description')->nullable(); // Deskripsi opsional
             $table->timestamps();
         });
     }

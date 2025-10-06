@@ -58,6 +58,9 @@
                             </x-slot>
                             <x-slot name="content">
                                 <div class="text-sm ms-3 font-bold">Data</div>
+                                <x-dropdown-link :href="route('development-points.index')">
+                                    <i class="bi bi-geo-alt me-2"></i>Titik Pembangunan
+                                </x-dropdown-link>
                                 <x-dropdown-link :href="route('item-categories.index')">
                                     <i class="bi bi-list me-2"></i>Kategori Barang
                                 </x-dropdown-link>
