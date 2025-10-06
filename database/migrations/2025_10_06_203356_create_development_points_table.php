@@ -6,22 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('development_points', function (Blueprint $table) {
             $table->id();
             $table->string('development_point'); // Nama titik pembangunan
-            $table->text('description')->nullable(); // Deskripsi opsional
+            $table->string('photo')->nullable(); // Foto opsional (nama file / path)
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('development_points');

@@ -8,6 +8,6 @@ class DevelopmentPoint extends Model
 {
     protected $fillable = [
         'development_point',
-        'description',
+        'photo',
     ];
 }
