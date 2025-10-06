@@ -14,15 +14,25 @@ use Carbon\Carbon;
 class ItemInController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $items = Item::orderBy('name')->get();
         $suppliers = ItemSupplier::orderBy('supplier')->get();
         $categories = ItemCategory::orderBy('category')->get();
-        $itemIns = ItemIn::with(['item', 'supplier'])->orderBy('purchase_date', 'desc')->paginate(10);
 
-        return view('item-ins.index', compact('itemIns', 'items', 'suppliers', 'categories'));
+        // Ambil bulan yang dipilih dari query (?month=2025-10)
+        $selectedMonth = $request->get('month', now()->format('Y-m')); // default bulan ini
+
+        // Ambil data berdasarkan bulan yang dipilih
+        $itemIns = ItemIn::with(['item', 'supplier'])
+            ->whereYear('purchase_date', substr($selectedMonth, 0, 4))
+            ->whereMonth('purchase_date', substr($selectedMonth, 5, 2))
+            ->orderBy('purchase_date', 'desc')
+            ->paginate(10);
+
+        return view('item-ins.index', compact('itemIns', 'items', 'suppliers', 'categories', 'selectedMonth'));
     }
+
 
 
     public function store(Request $request)

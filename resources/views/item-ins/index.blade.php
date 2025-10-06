@@ -20,29 +20,47 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header kiri-kanan --}}
-                <div class="flex justify-between items-center px-6 mt-6">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center px-6 mt-6 gap-3">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
                         <i class="bi bi-box-arrow-in-down text-sky-600"></i> Daftar Barang Masuk
                     </h3>
-                    <x-primary-button onclick="toggleCreateModal()">
-                        <i class="bi bi-plus-circle mr-2"></i>Tambah Barang Masuk
-                    </x-primary-button>
+
+                    <div class="flex items-center gap-3">
+                        {{-- Filter Bulan --}}
+                        <form method="GET" action="{{ route('item-ins.index') }}" class="flex items-center gap-2">
+                            <label for="month" class="text-sm font-medium text-gray-700">Filter Bulan:</label>
+                            <input type="month" id="month" name="month" value="{{ $selectedMonth }}"
+                                class="border-gray-300 rounded p-2 text-sm" onchange="this.form.submit()">
+                        </form>
+
+                        <x-primary-button onclick="toggleCreateModal()">
+                            <i class="bi bi-plus-circle mr-2"></i>Tambah Barang Masuk
+                        </x-primary-button>
+                    </div>
                 </div>
+
 
                 {{-- Tabel --}}
                 <div class="p-6 overflow-x-auto">
+                    <div class=" mb-2 text-sm text-gray-600 italic">
+                        Menampilkan data bulan
+                        <span class="font-semibold text-sky-700">
+                            {{ \Carbon\Carbon::parse($selectedMonth . '-01')->translatedFormat('F Y') }}
+                        </span>
+                    </div>
+
                     <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
                         <thead class="text-xs text-white uppercase bg-sky-700">
                             <tr>
                                 <th class="px-4 py-3 text-center w-12">#</th>
-                                <th class="px-4 py-3">Barang</th>
+                                <th class="px-4 py-3">Kategori</th>
+                                <th class="px-4 py-3">Jenis</th>
                                 <th class="px-4 py-3">Supplier</th>
                                 <th class="px-4 py-3 text-center">Jumlah</th>
                                 <th class="px-4 py-3 text-center">Harga Satuan</th>
                                 <th class="px-4 py-3 text-center">Total Harga</th>
                                 <th class="px-4 py-3 text-center">Tanggal Beli</th>
                                 <th class="px-4 py-3 text-center">Nota</th>
-                                <th class="px-4 py-3">Catatan</th>
                                 <th class="px-4 py-3 text-center w-20">Aksi</th>
                             </tr>
                         </thead>
@@ -50,6 +68,7 @@
                             @forelse ($itemIns as $in)
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-3">{{ $in->item->category->category ?? '-' }}</td>
                                     <td class="px-4 py-3 font-semibold">{{ $in->item->name ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ $in->supplier->supplier ?? '-' }}</td>
                                     <td class="px-4 py-3 text-center">{{ $in->quantity }}</td>
@@ -71,7 +90,6 @@
                                             <span class="text-gray-400 italic">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3">{{ $in->note ?? '-' }}</td>
                                     <td class="px-4 py-3 text-center">
                                         <form action="{{ route('item-ins.destroy', $in->id) }}" method="POST"
                                             onsubmit="return confirm('Yakin ingin menghapus data ini?')">
@@ -174,9 +192,15 @@
                 {{-- Foto Nota --}}
                 <div class="mb-3">
                     <label class="block text-sm font-medium mb-1">Foto Nota (opsional)</label>
-                    <input type="file" name="recipt_photo" accept="image/*"
-                        class="w-full border-gray-300 rounded p-2">
+
+                    {{-- Input dari kamera --}}
+                    <input type="file" name="recipt_photo" accept="image/*" capture="environment"
+                        class="w-full border-gray-300 rounded p-2 mb-2">
+
+                    <div class="text-xs text-gray-500">Bisa pilih dari galeri atau langsung ambil foto dengan kamera.
+                    </div>
                 </div>
+
 
                 {{-- Catatan --}}
                 <div class="mb-3">
