@@ -80,7 +80,6 @@
                                 <x-dropdown-link :href="route('item-outs.index')">
                                     <i class="bi bi-box-arrow-left me-2"></i>Barang Keluar
                                 </x-dropdown-link>
-
                             </x-slot>
                         </x-dropdown>
                     </div>
@@ -171,6 +170,42 @@
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('worker-presences.index')">
                         <i class="bi bi-qr-code-scan me-2"></i> Scan QR Presensi
+                    </x-dropdown-link>
+                </x-slot>
+            </x-dropdown>
+            <x-dropdown align="right" width="48">
+                <x-slot name="trigger">
+                    <button
+                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <div>Stok Gudang</div>
+                        <div class="ms-2">
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                    </button>
+                </x-slot>
+                <x-slot name="content">
+                    <div class="text-sm ms-3 font-bold">Data</div>
+                    <x-dropdown-link :href="route('development-points.index')">
+                        <i class="bi bi-geo-alt me-2"></i>Titik Pembangunan
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('item-categories.index')">
+                        <i class="bi bi-list me-2"></i>Kategori Barang
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('items.index')">
+                        <i class="bi bi-nut me-2"></i>Jenis Barang
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('item-suppliers.index')">
+                        <i class="bi bi-truck me-2"></i>Pemasok
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('item-stocks.index')">
+                        <i class="bi bi-box me-2"></i>Stok Barang
+                    </x-dropdown-link>
+                    <div class="text-sm ms-3 font-bold">Coming Soon</div>
+                    <x-dropdown-link :href="route('item-ins.index')">
+                        <i class="bi bi-box-arrow-right me-2"></i>Barang Masuk
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('item-outs.index')">
+                        <i class="bi bi-box-arrow-left me-2"></i>Barang Keluar
                     </x-dropdown-link>
                 </x-slot>
             </x-dropdown>

@@ -55,7 +55,7 @@
                                             <span class="text-gray-500 italic">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-3 py-2 text-center space-x-2">
+                                    <td class="px-3 py-2 text-start space-x-2">
                                         <button
                                             onclick="toggleEditModal({{ $point->id }}, '{{ $point->development_point }}', '{{ $point->photo }}')"
                                             class="text-yellow-600 hover:text-yellow-800">
@@ -73,7 +73,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="py-4 text-center text-gray-500 italic">
+                                    <td colspan="4" class="py-4 text-start text-gray-500 italic">
                                         Belum ada titik pembangunan.
                                     </td>
                                 </tr>

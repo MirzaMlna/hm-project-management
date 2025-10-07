@@ -12,7 +12,7 @@
                 Presensi Tukang
             </h2>
             {{-- Tanggal & Jam Sekarang --}}
-            <div class="text-center">
+            <div class="text-start">
                 <p class="text-sm font-semibold text-gray-700">
                     <span id="current-time"></span> <br> <span id="current-date"></span>
                 </p>
@@ -69,7 +69,7 @@
                         <i class="bi bi-qr-code-scan mr-2"></i> Scan QR Code
                     </h3>
                     <div id="qr-reader" class="w-full"></div>
-                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
+                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-start">
                         <p class="text-sm text-red-700 font-semibold">
                             Belum Absen: <span class="text-xl font-bold">{{ $notPresentCount }}</span> Tukang
                         </p>
@@ -117,19 +117,19 @@
                         <table class="min-w-full text-sm">
                             <thead class="bg-sky-800 text-white">
                                 <tr>
-                                    <th class="p-2 text-center">No</th>
+                                    <th class="p-2 text-start">No</th>
                                     <th class="p-2">Kategori</th>
                                     <th class="p-2">Nama</th>
-                                    <th class="p-2 text-center">Kode</th>
-                                    <th class="p-2 text-center">Presensi 1</th>
-                                    <th class="p-2 text-center">Presensi 2</th>
-                                    <th class="p-2 text-center">Presensi Pulang</th>
-                                    <th class="p-2 text-center">Aksi</th>
+                                    <th class="p-2 text-start">Kode</th>
+                                    <th class="p-2 text-start">Presensi 1</th>
+                                    <th class="p-2 text-start">Presensi 2</th>
+                                    <th class="p-2 text-start">Presensi Pulang</th>
+                                    <th class="p-2 text-start">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($presences as $index => $presence)
-                                    <tr class="text-center">
+                                    <tr class="text-start">
                                         <td class="p-2">{{ $index + 1 }}</td>
                                         <td class="p-2">{{ $presence->worker->category->category ?? '-' }}</td>
                                         <td class="p-2">{{ $presence->worker->name }}</td>
@@ -183,7 +183,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="p-4 text-gray-500 text-center">
+                                        <td colspan="8" class="p-4 text-gray-500 text-start">
                                             Belum ada presensi hari ini.
                                         </td>
                                     </tr>

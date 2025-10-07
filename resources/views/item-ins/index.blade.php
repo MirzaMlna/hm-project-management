@@ -61,36 +61,36 @@
                     <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                         <thead class="text-xs text-white uppercase bg-sky-700">
                             <tr>
-                                <th class="px-4 py-3 text-center w-12">#</th>
+                                <th class="px-4 py-3 text-start w-12">#</th>
                                 <th class="px-4 py-3">Kategori</th>
                                 <th class="px-4 py-3">Jenis</th>
                                 <th class="px-4 py-3">Supplier</th>
-                                <th class="px-4 py-3 text-center">Jumlah</th>
-                                <th class="px-4 py-3 text-center">Harga Satuan</th>
-                                <th class="px-4 py-3 text-center">Total Harga</th>
-                                <th class="px-4 py-3 text-center">Tanggal Beli</th>
-                                <th class="px-4 py-3 text-center">Nota</th>
-                                <th class="px-4 py-3 text-center w-20">Aksi</th>
+                                <th class="px-4 py-3 text-start">Jumlah</th>
+                                <th class="px-4 py-3 text-start">Harga Satuan</th>
+                                <th class="px-4 py-3 text-start">Total Harga</th>
+                                <th class="px-4 py-3 text-start">Tanggal Beli</th>
+                                <th class="px-4 py-3 text-start">Nota</th>
+                                <th class="px-4 py-3 text-start w-20">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($itemIns as $in)
                                 <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-3 text-start">{{ $loop->iteration }}</td>
                                     <td class="px-4 py-3">{{ $in->item->category->category ?? '-' }}</td>
                                     <td class="px-4 py-3 font-semibold">{{ $in->item->name ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ $in->supplier->supplier ?? '-' }}</td>
-                                    <td class="px-4 py-3 text-center">{{ $in->quantity }}</td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-start">{{ $in->quantity }}</td>
+                                    <td class="px-4 py-3 text-start">
                                         Rp{{ number_format($in->unit_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="px-4 py-3 text-center font-semibold text-sky-700">
+                                    <td class="px-4 py-3 text-start font-semibold text-sky-700">
                                         Rp{{ number_format($in->total_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-start">
                                         {{ \Carbon\Carbon::parse($in->purchase_date)->translatedFormat('d M Y') }}
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-start">
                                         @if ($in->recipt_photo)
                                             <a href="{{ asset('storage/' . $in->recipt_photo) }}" target="_blank"
                                                 class="text-sky-600 hover:underline">
@@ -100,7 +100,7 @@
                                             <span class="text-gray-400 italic">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-4 py-3 text-start">
                                         <form action="{{ route('item-ins.destroy', $in->id) }}" method="POST"
                                             onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                             @csrf
@@ -113,7 +113,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="text-center py-4 text-gray-500 italic bg-gray-50">
+                                    <td colspan="10" class="text-start py-4 text-gray-500 italic bg-gray-50">
                                         Belum ada data barang masuk.
                                     </td>
                                 </tr>

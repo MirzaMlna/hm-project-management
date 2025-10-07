@@ -51,28 +51,28 @@
                                 <table class="min-w-full text-sm text-left text-gray-600">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                                         <tr>
-                                            <th class="px-4 py-3 text-center w-12">#</th>
+                                            <th class="px-4 py-3 text-start w-12">#</th>
                                             <th class="px-4 py-3">Barang</th>
                                             <th class="px-4 py-3">Satuan</th>
-                                            <th class="px-4 py-3 text-center">Stok Saat Ini</th>
-                                            <th class="px-4 py-3 text-center">Minimal</th>
-                                            <th class="px-4 py-3 text-center">Terakhir Diperbarui</th>
-                                            <th class="px-4 py-3 text-center w-24">Aksi</th>
+                                            <th class="px-4 py-3 text-start">Stok Saat Ini</th>
+                                            <th class="px-4 py-3 text-start">Minimal</th>
+                                            <th class="px-4 py-3 text-start">Terakhir Diperbarui</th>
+                                            <th class="px-4 py-3 text-start w-24">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($categoryStocks as $stock)
                                             <tr class="bg-white border-b border-gray-200 hover:bg-gray-50">
-                                                <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                                                <td class="px-4 py-3 text-start">{{ $loop->iteration }}</td>
                                                 <td class="px-4 py-3 font-semibold">{{ $stock->item->name ?? '-' }}</td>
                                                 <td class="px-4 py-3">{{ $stock->item->unit ?? '-' }}</td>
-                                                <td class="px-4 py-3 text-center">{{ $stock->current_stock }}</td>
-                                                <td class="px-4 py-3 text-center">{{ $stock->minimum_stock ?? '-' }}
+                                                <td class="px-4 py-3 text-start">{{ $stock->current_stock }}</td>
+                                                <td class="px-4 py-3 text-start">{{ $stock->minimum_stock ?? '-' }}
                                                 </td>
-                                                <td class="px-4 py-3 text-center">
+                                                <td class="px-4 py-3 text-start">
                                                     {{ $stock->last_updated ? \Carbon\Carbon::parse($stock->last_updated)->translatedFormat('d M Y H:i') : '-' }}
                                                 </td>
-                                                <td class="px-4 py-3 text-center space-x-2">
+                                                <td class="px-4 py-3 text-start space-x-2">
                                                     <button type="button" class="btn-edit"
                                                         data-id="{{ $stock->id }}"
                                                         data-current="{{ $stock->current_stock }}"
@@ -95,7 +95,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="7"
-                                                    class="text-center py-4 text-gray-500 italic bg-gray-50">
+                                                    class="text-start py-4 text-gray-500 italic bg-gray-50">
                                                     Tidak ada stok dalam kategori ini.
                                                 </td>
                                             </tr>
@@ -105,7 +105,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="text-center text-gray-500 py-10">
+                        <div class="text-start text-gray-500 py-10">
                             Belum ada kategori barang yang terdaftar.
                         </div>
                     @endforelse

@@ -107,7 +107,7 @@
                         </thead>
                         <tbody>
                             @forelse ($workers as $index => $worker)
-                                <tr class="text-center border-b hover:bg-gray-50">
+                                <tr class="text-start border-b hover:bg-gray-50">
                                     <td class="px-4 py-2">{{ $workers->firstItem() + $index }}</td>
                                     <td class="px-4 py-2 text-gray-500">{{ $worker->category->category ?? '-' }}</td>
                                     <td class="px-4 py-2 font-semibold">{{ $worker->name }}</td>
@@ -143,7 +143,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="py-4 text-center text-gray-500">
+                                    <td colspan="8" class="py-4 text-start text-gray-500">
                                         Tidak ada tukang ditambahkan.
                                     </td>
                                 </tr>

@@ -43,12 +43,12 @@
                                 <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
                                     <thead class="text-xs text-white uppercase bg-sky-700">
                                         <tr>
-                                            <th class="px-4 py-3 text-center w-12">#</th>
+                                            <th class="px-4 py-3 text-start w-12">#</th>
                                             <th class="px-4 py-3">Kode</th>
                                             <th class="px-4 py-3">Jenis</th>
-                                            <th class="px-4 py-3 text-center">Satuan</th>
-                                            <th class="px-4 py-3 text-center">Foto</th>
-                                            <th class="px-4 py-3 text-center w-24">Aksi</th>
+                                            <th class="px-4 py-3 text-start">Satuan</th>
+                                            <th class="px-4 py-3 text-start">Foto</th>
+                                            <th class="px-4 py-3 text-start w-24">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,7 +58,7 @@
 
                                         @forelse ($categoryItems as $index => $item)
                                             <tr class="border-b hover:bg-gray-50">
-                                                <td class="px-4 py-3 text-center font-medium text-gray-800">
+                                                <td class="px-4 py-3 text-start font-medium text-gray-800">
                                                     {{ $loop->iteration }}
                                                 </td>
                                                 <td class="px-4 py-3">
@@ -67,10 +67,10 @@
                                                 <td class="px-4 py-3 font-semibold text-gray-900">
                                                     {{ $item->name }}
                                                 </td>
-                                                <td class="px-4 py-3 text-center">
+                                                <td class="px-4 py-3 text-start">
                                                     {{ $item->unit }}
                                                 </td>
-                                                <td class="px-4 py-3 text-center">
+                                                <td class="px-4 py-3 text-start">
                                                     @if ($item->photo)
                                                         <img src="{{ asset('storage/' . $item->photo) }}"
                                                             class="w-12 h-12 rounded object-cover border mx-auto">
@@ -78,7 +78,7 @@
                                                         <span class="text-gray-400">-</span>
                                                     @endif
                                                 </td>
-                                                <td class="px-4 py-3 text-center space-x-2">
+                                                <td class="px-4 py-3 text-start space-x-2">
                                                     <button type="button" class="btn-edit"
                                                         data-id="{{ $item->id }}" data-name="{{ e($item->name) }}"
                                                         data-unit="{{ e($item->unit) }}"
@@ -103,7 +103,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="6"
-                                                    class="text-center py-4 text-gray-500 italic bg-gray-50">
+                                                    class="text-start py-4 text-gray-500 italic bg-gray-50">
                                                     Tidak ada barang dalam kategori ini.
                                                 </td>
                                             </tr>
@@ -115,7 +115,7 @@
 
                         </div>
                     @empty
-                        <div class="text-center text-gray-500 py-10">
+                        <div class="text-start text-gray-500 py-10">
                             Belum ada kategori barang yang terdaftar.
                         </div>
                     @endforelse

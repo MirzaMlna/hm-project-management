@@ -41,20 +41,20 @@
                         <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                             <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
-                                    <th class="px-4 py-3 text-center w-12">#</th>
+                                    <th class="px-4 py-3 text-start w-12">#</th>
                                     <th class="px-4 py-3">Kategori</th>
-                                    <th class="px-4 py-3 text-center">Jumlah Tukang</th>
-                                    <th class="px-4 py-3 text-center w-24">Aksi</th>
+                                    <th class="px-4 py-3 text-start">Jumlah Tukang</th>
+                                    <th class="px-4 py-3 text-start w-24">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($categories as $index => $category)
                                     <tr class="bg-white border-b hover:bg-gray-50">
-                                        <td class="px-4 py-3 text-center font-medium text-gray-800">
+                                        <td class="px-4 py-3 text-start font-medium text-gray-800">
                                             {{ $index + 1 }}
                                         </td>
                                         <td class="px-4 py-3">{{ $category->category }}</td>
-                                        <td class="px-4 py-3 text-center">{{ $category->workers_count }}</td>
+                                        <td class="px-4 py-3 text-start">{{ $category->workers_count }}</td>
                                         <td class="px-4 py-3">
                                             <div class="flex gap-3 justify-center">
                                                 <button
@@ -76,7 +76,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-gray-500 italic bg-gray-50">
+                                        <td colspan="4" class="text-start py-4 text-gray-500 italic bg-gray-50">
                                             Belum ada data kategori.
                                         </td>
                                     </tr>
