@@ -17,8 +17,10 @@ class ItemIn extends Model
         'total_price',
         'purchase_date',
         'recipt_photo',
+        'item_in_photo',
         'note',
     ];
+
 
     public function item()
     {

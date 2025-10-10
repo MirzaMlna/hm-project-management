@@ -39,23 +39,27 @@ class ItemInController extends Controller
     {
         $request->validate([
             'item_id' => 'required|exists:items,id',
-            'supplier_id' => 'required|exists:item_suppliers,id', // ✅ ubah ini
+            'supplier_id' => 'required|exists:item_suppliers,id',
             'quantity' => 'required|integer|min:1',
             'unit_price' => 'required|numeric|min:0',
             'purchase_date' => 'required|date',
             'recipt_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'item_in_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ✅ validasi baru
             'note' => 'nullable|string',
         ]);
 
-
-        $path = null;
+        $reciptPath = null;
         if ($request->hasFile('recipt_photo')) {
-            $path = $request->file('recipt_photo')->store('receipts', 'public');
+            $reciptPath = $request->file('recipt_photo')->store('receipts', 'public');
+        }
+
+        $itemInPath = null;
+        if ($request->hasFile('item_in_photo')) {
+            $itemInPath = $request->file('item_in_photo')->store('item_in_photos', 'public');
         }
 
         $total = $request->quantity * $request->unit_price;
 
-        // Simpan ke tabel item_ins
         $itemIn = ItemIn::create([
             'item_id' => $request->item_id,
             'supplier_id' => $request->supplier_id,
@@ -63,7 +67,8 @@ class ItemInController extends Controller
             'unit_price' => $request->unit_price,
             'total_price' => $total,
             'purchase_date' => $request->purchase_date,
-            'recipt_photo' => $path,
+            'recipt_photo' => $reciptPath,
+            'item_in_photo' => $itemInPath, // ✅ simpan ke database
             'note' => $request->note,
         ]);
 
@@ -83,7 +88,9 @@ class ItemInController extends Controller
         if ($itemIn->recipt_photo && Storage::disk('public')->exists($itemIn->recipt_photo)) {
             Storage::disk('public')->delete($itemIn->recipt_photo);
         }
-
+        if ($itemIn->item_in_photo && Storage::disk('public')->exists($itemIn->item_in_photo)) {
+            Storage::disk('public')->delete($itemIn->item_in_photo);
+        }
         // Kurangi stok
         $stock = ItemStock::where('item_id', $itemIn->item_id)->first();
         if ($stock && $stock->current_stock >= $itemIn->quantity) {

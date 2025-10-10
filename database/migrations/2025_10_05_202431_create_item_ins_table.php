@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('total_price', 15, 2);
             $table->date('purchase_date');
             $table->string('recipt_photo')->nullable();
+            $table->string('item_in_photo')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
         });

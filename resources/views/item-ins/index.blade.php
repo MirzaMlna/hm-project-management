@@ -70,6 +70,7 @@
                                 <th class="px-4 py-3 text-start">Total Harga</th>
                                 <th class="px-4 py-3 text-start">Tanggal Beli</th>
                                 <th class="px-4 py-3 text-start">Nota</th>
+                                <th class="px-4 py-3 text-start">Foto Barang</th>
                                 <th class="px-4 py-3 text-start w-20">Aksi</th>
                             </tr>
                         </thead>
@@ -96,6 +97,14 @@
                                                 class="text-sky-600 hover:underline">
                                                 Lihat
                                             </a>
+                                        @else
+                                            <span class="text-gray-400 italic">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3 text-start">
+                                        @if ($in->item_in_photo)
+                                            <a href="{{ asset('storage/' . $in->item_in_photo) }}" target="_blank"
+                                                class="text-sky-600 hover:underline">Lihat</a>
                                         @else
                                             <span class="text-gray-400 italic">-</span>
                                         @endif
@@ -208,6 +217,16 @@
                     <div class="text-xs text-gray-500">Bisa pilih dari galeri atau langsung ambil foto dengan kamera.
                     </div>
                 </div>
+
+                {{-- Foto Barang Masuk --}}
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Foto Barang Masuk (opsional)</label>
+                    <input type="file" name="item_in_photo" accept="image/*" capture="environment"
+                        class="w-full border-gray-300 rounded p-2 mb-2">
+                    <div class="text-xs text-gray-500">Bisa pilih dari galeri atau langsung ambil foto dengan kamera.
+                    </div>
+                </div>
+
 
                 {{-- Catatan --}}
                 <div class="mb-3">
