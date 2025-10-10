@@ -19,6 +19,8 @@ return new class extends Migration
         });
     }
 
+    //test
+
     public function down(): void
     {
         Schema::dropIfExists('item_outs');
