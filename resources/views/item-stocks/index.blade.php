@@ -25,10 +25,18 @@
                         <i class="bi bi-boxes text-sky-600"></i> Daftar Stok Barang
                     </h3>
 
-                    <x-primary-button onclick="toggleCreateModal()" title="Tambah Stok">
-                        <i class="bi bi-plus-circle"></i>
-                    </x-primary-button>
+                    <div class="flex gap-2">
+                        <a href="{{ route('item-stocks.export') }}"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded flex items-center gap-2">
+                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                        </a>
+
+                        <x-primary-button onclick="toggleCreateModal()" title="Tambah Stok">
+                            <i class="bi bi-plus-circle"></i>
+                        </x-primary-button>
+                    </div>
                 </div>
+
 
 
                 {{-- Loop per kategori --}}

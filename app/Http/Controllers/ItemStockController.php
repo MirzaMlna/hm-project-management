@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemStockExport;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\ItemStock;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemStockController extends Controller
 {
@@ -67,5 +69,11 @@ class ItemStockController extends Controller
             ->get(['id', 'name']);
 
         return response()->json($items);
+    }
+
+    public function export()
+    {
+        $fileName = 'Stok_Barang_' . now()->format('d-m-Y_H-i') . '.xlsx';
+        return Excel::download(new ItemStockExport(), $fileName);
     }
 }

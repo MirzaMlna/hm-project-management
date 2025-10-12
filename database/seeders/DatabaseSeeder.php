@@ -17,21 +17,17 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(WorkerPresenceScheduleSeeder::class);
         $this->call(WorkerPresenceSeeder::class);
+        WorkerPresenceSchedule::factory()->create();
 
-
-        // 1. Buat kategori
         // $categories = ['Tukang Jawa', 'Tukang Banjar'];
         // foreach ($categories as $category) {
         //     WorkerCategory::factory()->create(['category' => $category]);
         // }
 
-        // // 2. Buat 10 worker
         // $workers = Worker::factory(10)->create();
 
-        // // 3. Buat schedule (bisa satu baris saja)
         // WorkerPresenceSchedule::factory()->create();
 
-        // // 4. Buat presensi per worker setiap hari
         // $startDate = Carbon::now()->subDays(29); // 30 hari terakhir
         // $endDate = Carbon::now();
 
