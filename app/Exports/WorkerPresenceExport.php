@@ -12,11 +12,12 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, WithEvents, WithTitle
 {
     protected $rows;
-    protected $period;      // array tanggal (format '01-Sep', ...)
+    protected $period;
     protected $dateRange;
     protected $categoryName;
 
@@ -51,24 +52,22 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Set default font Times New Roman untuk seluruh sheet
-                $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman');
-                $sheet->getParent()->getDefaultStyle()->getFont()->setSize(11);
+                // === FONT DEFAULT ===
+                $sheet->getParent()->getDefaultStyle()->getFont()
+                    ->setName('Times New Roman')->setSize(11);
 
-                // sisip 4 baris judul di atas
+                // === SISIPKAN 4 BARIS UNTUK JUDUL ===
                 $sheet->insertNewRowBefore(1, 4);
 
                 $periodCount = count($this->period);
                 $startColIndex = 5; // kolom E
                 $endColIndex = $startColIndex + max(0, $periodCount - 1);
-
                 $summaryColsCount = 5;
                 $summaryStartIndex = $endColIndex + 1;
                 $summaryEndIndex = $summaryStartIndex + $summaryColsCount - 1;
-
                 $lastCol = Coordinate::stringFromColumnIndex($summaryEndIndex);
 
-                // ===== Judul atas =====
+                // === JUDUL UTAMA ===
                 $sheet->mergeCells("A1:{$lastCol}1")->setCellValue('A1', 'ABSEN PEKERJA HARIAN HM COMPANY');
                 $sheet->mergeCells("A2:{$lastCol}2")->setCellValue('A2', 'PROYEK JL. LINGKAR DALAM SELATAN, BANJARMASIN');
                 $sheet->mergeCells("A3:{$lastCol}3")->setCellValue('A3', $this->dateRange);
@@ -82,19 +81,19 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                     ]
                 ]);
 
-                // ===== Merge header kiri (No..Upah) ke bawah =====
+                // === MERGE HEADER KIRI (NO - UPAH) ===
                 for ($i = 1; $i <= 4; $i++) {
                     $col = Coordinate::stringFromColumnIndex($i);
                     $sheet->mergeCells("{$col}5:{$col}6");
                 }
 
-                // ===== Merge kolom summary (Total..LM) =====
+                // === MERGE KOLOM SUMMARY ===
                 for ($i = $summaryStartIndex; $i <= $summaryEndIndex; $i++) {
                     $col = Coordinate::stringFromColumnIndex($i);
                     $sheet->mergeCells("{$col}5:{$col}6");
                 }
 
-                // ===== Merge Uraian Hari/Tanggal =====
+                // === MERGE URAIAN HARI/TANGGAL ===
                 $startCell = Coordinate::stringFromColumnIndex($startColIndex);
                 $endCell   = Coordinate::stringFromColumnIndex($endColIndex);
                 if ($periodCount > 0) {
@@ -104,7 +103,7 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                     $sheet->setCellValue("{$startCell}5", "Uraian Hari/Tanggal");
                 }
 
-                // ===== Styling header =====
+                // === STYLING HEADER ===
                 $sheet->getStyle("A5:{$lastCol}6")->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
@@ -116,29 +115,26 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                     ],
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => 'D9E1F2'] // biru muda
+                        'startColor' => ['rgb' => 'D9E1F2']
                     ]
                 ]);
 
-                // ===== Styling data =====
+                // === STYLING DATA ===
                 $highestRow = $sheet->getHighestRow();
                 $sheet->getStyle("A7:{$lastCol}{$highestRow}")->applyFromArray([
-                    'borders' => [
-                        'allBorders' => ['borderStyle' => Border::BORDER_THIN]
-                    ],
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
                     'alignment' => [
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'vertical'   => Alignment::VERTICAL_CENTER
                     ]
                 ]);
 
-                // ===== Format Rupiah di kolom Upah Harian =====
+                // === FORMAT RUPIAH DI KOLOM UPAH HARIAN ===
                 $salaryCol = Coordinate::stringFromColumnIndex(4); // D
                 $sheet->getStyle("{$salaryCol}7:{$salaryCol}{$highestRow}")
-                    ->getNumberFormat()
-                    ->setFormatCode('"Rp"#,##0');
+                    ->getNumberFormat()->setFormatCode('"Rp"#,##0');
 
-                // ===== Keterangan bawah =====
+                // === KETERANGAN BAWAH ===
                 $rowKeterangan = $highestRow + 2;
                 $sheet->mergeCells("A{$rowKeterangan}:{$lastCol}{$rowKeterangan}")
                     ->setCellValue("A{$rowKeterangan}", "Keterangan :");
@@ -151,24 +147,37 @@ class WorkerPresenceExport implements FromArray, WithHeadings, ShouldAutoSize, W
                 $sheet->mergeCells("A" . ($rowKeterangan + 4) . ":{$lastCol}" . ($rowKeterangan + 4))
                     ->setCellValue("A" . ($rowKeterangan + 4), "LM : Lembur Malam (Scan Presensi 3 Jam Setelah Jam Kerja)");
 
-                // ===== Auto size semua kolom =====
+                // === AUTO SIZE SEMUA KOLOM ===
                 $highestColumn = $sheet->getHighestColumn();
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
-
                 for ($col = 1; $col <= $highestColumnIndex; $col++) {
                     $colLetter = Coordinate::stringFromColumnIndex($col);
                     $sheet->getColumnDimension($colLetter)->setAutoSize(true);
                 }
 
-                // hitung ulang width agar efek autosize masuk
-                $sheet->calculateColumnWidths();
+                // === SET PRINT ORIENTATION & PAGE FIT ===
+                $pageSetup = $sheet->getPageSetup();
+                $pageSetup->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+                $pageSetup->setPaperSize(PageSetup::PAPERSIZE_A4);
+                $pageSetup->setFitToWidth(1);  // Fit all columns in one page width
+                $pageSetup->setFitToHeight(0); // Unlimited height (multi-page)
+                $pageSetup->setHorizontalCentered(true);
+
+                // === MARGIN & POSISI CETAK ===
+                $margins = $sheet->getPageMargins();
+                $margins->setTop(0.4);
+                $margins->setBottom(0.4);
+                $margins->setLeft(0.3);
+                $margins->setRight(0.3);
+
+                // === CENTER SAAT PRINT ===
+                $sheet->getPageSetup()->setHorizontalCentered(true);
             },
         ];
     }
 
     public function title(): string
     {
-        // Nama sheet sesuai nama kategori
         return $this->categoryName;
     }
 }

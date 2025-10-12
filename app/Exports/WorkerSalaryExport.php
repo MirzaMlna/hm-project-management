@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, WithEvents, WithTitle
 {
@@ -53,20 +54,24 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Font default Times New Roman
-                $sheet->getParent()->getDefaultStyle()->getFont()->setName('Times New Roman')->setSize(11);
+                // === FONT DEFAULT ===
+                $sheet->getParent()->getDefaultStyle()->getFont()
+                    ->setName('Times New Roman')->setSize(11);
 
-                // Sisipkan 4 baris judul di atas
+                // === SISIPKAN JUDUL ===
                 $sheet->insertNewRowBefore(1, 4);
-
                 $highestCol = $sheet->getHighestColumn();
                 $lastCol = $highestCol;
 
-                // Judul
-                $sheet->mergeCells("A1:{$lastCol}1")->setCellValue("A1", "LAPORAN PERHITUNGAN GAJI PEKERJA HARIAN HM COMPANY");
-                $sheet->mergeCells("A2:{$lastCol}2")->setCellValue("A2", "PROYEK JL. LINGKAR DALAM SELATAN, BANJARMASIN");
-                $sheet->mergeCells("A3:{$lastCol}3")->setCellValue("A3", $this->dateRange);
-                $sheet->mergeCells("A4:{$lastCol}4")->setCellValue("A4", "Kategori: " . $this->categoryName);
+                // === HEADER ATAS ===
+                $sheet->mergeCells("A1:{$lastCol}1")
+                    ->setCellValue("A1", "LAPORAN PERHITUNGAN GAJI PEKERJA HARIAN HM COMPANY");
+                $sheet->mergeCells("A2:{$lastCol}2")
+                    ->setCellValue("A2", "PROYEK JL. LINGKAR DALAM SELATAN, BANJARMASIN");
+                $sheet->mergeCells("A3:{$lastCol}3")
+                    ->setCellValue("A3", $this->dateRange);
+                $sheet->mergeCells("A4:{$lastCol}4")
+                    ->setCellValue("A4", "Kategori: " . $this->categoryName);
 
                 $sheet->getStyle("A1:{$lastCol}4")->applyFromArray([
                     'font' => ['bold' => true],
@@ -76,7 +81,7 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                     ]
                 ]);
 
-                // Styling header (baris 5)
+                // === HEADER TABEL ===
                 $sheet->getStyle("A5:{$lastCol}5")->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => [
@@ -92,7 +97,7 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                     ]
                 ]);
 
-                // Styling data
+                // === STYLING DATA ===
                 $highestRow = $sheet->getHighestRow();
                 $sheet->getStyle("A6:{$lastCol}{$highestRow}")->applyFromArray([
                     'borders' => [
@@ -104,7 +109,7 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                     ]
                 ]);
 
-                // Format rupiah di kolom Upah & Gaji
+                // === FORMAT RUPIAH ===
                 foreach ([4, 5, 6, 7, 8] as $colIndex) {
                     $colLetter = Coordinate::stringFromColumnIndex($colIndex);
                     $sheet->getStyle("{$colLetter}6:{$colLetter}{$highestRow}")
@@ -112,17 +117,12 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                         ->setFormatCode('"Rp"#,##0');
                 }
 
-                // ===== Tambahkan baris JUMLAH di bawah data =====
+                // === JUMLAH TOTAL ===
                 $jumlahRow = $highestRow + 1;
-
-                // Tulis label "JUMLAH"
                 $sheet->mergeCells("A{$jumlahRow}:G{$jumlahRow}");
                 $sheet->setCellValue("A{$jumlahRow}", "JUMLAH");
-
-                // Rumus SUM di kolom Total Gaji (H)
                 $sheet->setCellValue("H{$jumlahRow}", "=SUM(H6:H{$highestRow})");
 
-                // Style baris jumlah
                 $sheet->getStyle("A{$jumlahRow}:{$lastCol}{$jumlahRow}")->applyFromArray([
                     'font' => ['bold' => true],
                     'borders' => [
@@ -134,16 +134,14 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                     ],
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => 'FFF2CC'] // kuning muda biar beda
+                        'startColor' => ['rgb' => 'FFF2CC']
                     ]
                 ]);
-
-                // Format rupiah untuk total gaji (H)
                 $sheet->getStyle("H{$jumlahRow}")
                     ->getNumberFormat()
                     ->setFormatCode('"Rp"#,##0');
 
-                // ===== Tambahkan keterangan di bawah =====
+                // === KETERANGAN BAWAH ===
                 $rowKeterangan = $jumlahRow + 2;
                 $sheet->mergeCells("A{$rowKeterangan}:{$lastCol}{$rowKeterangan}")
                     ->setCellValue("A{$rowKeterangan}", "Keterangan :");
@@ -157,6 +155,39 @@ class WorkerSalaryExport implements FromArray, WithHeadings, ShouldAutoSize, Wit
                     ->setCellValue("A" . ($rowKeterangan + 4), "Bonus LM = Total LM x Upah Harian");
                 $sheet->mergeCells("A" . ($rowKeterangan + 5) . ":{$lastCol}" . ($rowKeterangan + 5))
                     ->setCellValue("A" . ($rowKeterangan + 5), "Total Gaji = Upah Harian + Bonus DLA + Bonus KLL + Bonus LM");
+
+                // === AUTO SIZE KOLOM ===
+                $highestColumn = $sheet->getHighestColumn();
+                $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+                for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                    $colLetter = Coordinate::stringFromColumnIndex($col);
+                    $sheet->getColumnDimension($colLetter)->setAutoSize(true);
+                }
+
+                // === ATUR TINGGI BARIS ===
+                for ($r = 1; $r <= $sheet->getHighestRow(); $r++) {
+                    // Baris judul & header sedikit lebih tinggi
+                    if ($r <= 5) {
+                        $sheet->getRowDimension($r)->setRowHeight(25);
+                    } else {
+                        $sheet->getRowDimension($r)->setRowHeight(22);
+                    }
+                }
+
+                // === PRINT SETTINGS ===
+                $pageSetup = $sheet->getPageSetup();
+                $pageSetup->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
+                $pageSetup->setPaperSize(PageSetup::PAPERSIZE_A4);
+                $pageSetup->setFitToWidth(1);
+                $pageSetup->setFitToHeight(0);
+                $pageSetup->setHorizontalCentered(true);
+
+                // === MARGIN PRINT ===
+                $margins = $sheet->getPageMargins();
+                $margins->setTop(0.4);
+                $margins->setBottom(0.4);
+                $margins->setLeft(0.3);
+                $margins->setRight(0.3);
             }
         ];
     }
