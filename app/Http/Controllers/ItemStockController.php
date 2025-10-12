@@ -17,7 +17,6 @@ class ItemStockController extends Controller
         $stocks = ItemStock::with('item')->orderBy('id', 'desc')->paginate(10);
         $items = Item::orderBy('name')->get();
         $categories = ItemCategory::orderBy('category')->get(); // 🔹 ditambahkan
-
         return view('item-stocks.index', compact('stocks', 'items', 'categories'));
     }
 
@@ -73,7 +72,7 @@ class ItemStockController extends Controller
 
     public function export()
     {
-        $fileName = 'Stok_Barang_' . now()->format('d-m-Y_H-i') . '.xlsx';
+        $fileName = 'Stok_Gudang_' . now()->format('d-m-Y_H-i') . '.xlsx';
         return Excel::download(new ItemStockExport(), $fileName);
     }
 }
