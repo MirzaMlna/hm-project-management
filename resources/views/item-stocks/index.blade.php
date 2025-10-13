@@ -28,7 +28,7 @@
                     <div class="flex gap-2">
                         <a href="{{ route('item-stocks.export') }}"
                             class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded flex items-center gap-2">
-                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
                         </a>
 
                         <x-primary-button onclick="toggleCreateModal()" title="Tambah Stok">
