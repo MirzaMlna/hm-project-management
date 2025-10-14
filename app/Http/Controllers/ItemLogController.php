@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemLogExport;
 use App\Models\ItemIn;
 use App\Models\ItemOut;
 use App\Models\ItemStock;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemLogController extends Controller
 {
@@ -120,5 +122,12 @@ class ItemLogController extends Controller
             'months' => $months,
             'selectedMonth' => $selectedMonth,
         ]);
+    }
+    public function export(Request $request)
+    {
+        $selectedMonth = $request->get('month', Carbon::now()->format('Y-m'));
+        $filename = 'Log Barang - ' . Carbon::parse($selectedMonth . '-01')->translatedFormat('F Y') . '.xlsx';
+
+        return Excel::download(new ItemLogExport($selectedMonth), $filename);
     }
 }

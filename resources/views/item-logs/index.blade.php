@@ -11,8 +11,8 @@
             {{-- 🔹 Tabel Log --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                {{-- 🔹 Filter Bulan (di kiri) --}}
-                <div class="flex justify-start px-6 pt-6">
+                {{-- 🔹 Filter & Tombol Export --}}
+                <div class="flex flex-wrap justify-between items-center px-6 pt-6 gap-3">
                     <form method="GET" action="{{ route('item-logs.index') }}" class="flex items-center gap-2">
                         <label for="month" class="text-sm text-gray-600">Filter Bulan :</label>
                         <select id="month" name="month" onchange="this.form.submit()"
@@ -25,7 +25,14 @@
                             @endforeach
                         </select>
                     </form>
+
+                    {{-- 🔹 Tombol Export --}}
+                    <a href="{{ route('item-logs.export', ['month' => $selectedMonth]) }}"
+                        class="inline-flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md shadow">
+                        <i class="bi bi-file-earmark-excel"></i> Export Excel
+                    </a>
                 </div>
+
 
                 {{-- 🔹 Tabel --}}
                 <div class="overflow-x-auto p-6">

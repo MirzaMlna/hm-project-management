@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/get-items-by-category/{id}', [ItemOutController::class, 'getItemsByCategory']);
     Route::resource('item-outs', ItemOutController::class);
     // Item Logs
+    Route::get('/item-logs/export', [ItemLogController::class, 'export'])->name('item-logs.export');
     Route::resource('item-logs', ItemLogController::class);
 });
 
