@@ -29,7 +29,7 @@
                 {{-- Header + Tombol Tambah --}}
                 <div class="flex justify-between items-center px-6 mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class="bi bi-list"></i> Kategori Barang
+                        <i class=""></i>
                     </h3>
                     <x-primary-button onclick="toggleCreateModal()">
                         <i class="bi bi-plus-circle"></i>

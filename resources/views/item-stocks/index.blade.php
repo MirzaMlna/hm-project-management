@@ -22,7 +22,7 @@
                 {{-- Header kiri-kanan --}}
                 <div class="flex justify-between items-center px-6 mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class="bi bi-boxes text-sky-600"></i> Daftar Stok Barang
+                        <i class=""></i>
                     </h3>
 
                     <div class="flex gap-2">

@@ -19,36 +19,61 @@
             {{-- Card utama --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                {{-- Header Section: Judul di kiri, tombol di kanan --}}
-                <div class="flex justify-between items-center px-6 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class="bi bi-nut"></i> Jenis Barang
-                    </h3>
-                    <x-primary-button class="!bg-sky-700 hover:!bg-sky-800 !text-white" onclick="toggleCreateModal()">
-                        <i class="bi bi-plus-circle"></i>
-                    </x-primary-button>
+                {{-- 🔹 Header Judul + Filter + Tombol --}}
+                <div class="flex flex-wrap justify-between items-center px-6 mt-6 gap-3">
+                    {{-- Dropdown Filter --}}
+                    <form method="GET" action="{{ route('items.index') }}">
+                        <select name="category" onchange="this.form.submit()"
+                            class="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition w-48">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}"
+                                    {{ $selectedCategory == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->category }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                    {{-- 🔹 Kanan: Filter + Tombol --}}
+                    <div class="flex flex-wrap items-center gap-2 justify-end">
+                        {{-- Tombol Import --}}
+                        <x-primary-button class="!bg-amber-600 hover:!bg-amber-700 !text-white"
+                            onclick="toggleImportModal()">
+                            <i class="bi bi-upload"></i>
+                        </x-primary-button>
+                        {{-- Tombol Tambah --}}
+                        <x-primary-button class="!bg-sky-700 hover:!bg-sky-800 !text-white"
+                            onclick="toggleCreateModal()">
+                            <i class="bi bi-plus-circle"></i>
+                        </x-primary-button>
+                    </div>
                 </div>
 
                 {{-- Loop per kategori --}}
-                <div class="p-6 text-gray-900 space-y-8">
-                    @forelse ($categories as $category)
+                <div class="p-4 sm:p-6 text-gray-900 space-y-8">
+                    @php
+                        $loopCategories = $selectedCategory ? $categories->where('id', $selectedCategory) : $categories;
+                    @endphp
+
+                    @forelse ($loopCategories as $category)
                         <div class="rounded border border-gray-200 shadow-sm">
                             {{-- Header kategori --}}
-                            <div class="bg-sky-700 text-white px-4 py-2 rounded-t font-semibold">
+                            <div class="bg-sky-700 text-white px-4 py-2 rounded-t font-semibold text-sm sm:text-base">
                                 {{ strtoupper($category->category) }}
                             </div>
 
                             {{-- Tabel barang --}}
                             <div class="overflow-x-auto mt-2">
-                                <table class="w-full text-sm text-left text-gray-600 border border-gray-200">
-                                    <thead class="text-xs text-white uppercase bg-sky-700">
+                                <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
+                                    <thead class="text-xs sm:text-sm text-white uppercase bg-sky-700">
                                         <tr>
-                                            <th class="px-4 py-3 text-start w-12">#</th>
-                                            <th class="px-4 py-3">Kode</th>
-                                            <th class="px-4 py-3">Jenis</th>
-                                            <th class="px-4 py-3 text-start">Satuan</th>
-                                            <th class="px-4 py-3 text-start">Foto</th>
-                                            <th class="px-4 py-3 text-start w-24">Aksi</th>
+                                            <th class="px-3 sm:px-4 py-3 text-start w-10 sm:w-12">#</th>
+                                            <th class="px-3 sm:px-4 py-3">Kode</th>
+                                            <th class="px-3 sm:px-4 py-3">Jenis</th>
+                                            <th class="px-3 sm:px-4 py-3">Satuan</th>
+                                            <th class="px-3 sm:px-4 py-3">Keterangan</th>
+                                            <th class="px-3 sm:px-4 py-3">Foto</th>
+                                            <th class="px-3 sm:px-4 py-3 text-start w-20 sm:w-24">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,27 +83,23 @@
 
                                         @forelse ($categoryItems as $index => $item)
                                             <tr class="border-b hover:bg-gray-50">
-                                                <td class="px-4 py-3 text-start font-medium text-gray-800">
+                                                <td class="px-3 sm:px-4 py-3 font-medium text-gray-800 text-center">
                                                     {{ $loop->iteration }}
                                                 </td>
-                                                <td class="px-4 py-3">
-                                                    {{ $item->code }}
-                                                </td>
-                                                <td class="px-4 py-3 font-semibold text-gray-900">
-                                                    {{ $item->name }}
-                                                </td>
-                                                <td class="px-4 py-3 text-start">
-                                                    {{ $item->unit }}
-                                                </td>
-                                                <td class="px-4 py-3 text-start">
+                                                <td class="px-3 sm:px-4 py-3">{{ $item->code }}</td>
+                                                <td class="px-3 sm:px-4 py-3 font-semibold text-gray-900">
+                                                    {{ $item->name }}</td>
+                                                <td class="px-3 sm:px-4 py-3">{{ $item->unit }}</td>
+                                                <td class="px-3 sm:px-4 py-3">{{ $item->description }}</td>
+                                                <td class="px-3 sm:px-4 py-3">
                                                     @if ($item->photo)
                                                         <img src="{{ asset('storage/' . $item->photo) }}"
-                                                            class="w-12 h-12 rounded object-cover border mx-auto">
+                                                            class="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover border mx-auto">
                                                     @else
                                                         <span class="text-gray-400">-</span>
                                                     @endif
                                                 </td>
-                                                <td class="px-4 py-3 text-start space-x-2">
+                                                <td class="px-3 sm:px-4 py-3 space-x-1 text-center">
                                                     <button type="button" class="btn-edit"
                                                         data-id="{{ $item->id }}" data-name="{{ e($item->name) }}"
                                                         data-unit="{{ e($item->unit) }}"
@@ -103,19 +124,17 @@
                                         @empty
                                             <tr>
                                                 <td colspan="6"
-                                                    class="text-start py-4 text-gray-500 italic bg-gray-50">
+                                                    class="text-center py-4 text-gray-500 italic bg-gray-50">
                                                     Tidak ada barang dalam kategori ini.
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
-
                             </div>
-
                         </div>
                     @empty
-                        <div class="text-start text-gray-500 py-10">
+                        <div class="text-center text-gray-500 py-10">
                             Belum ada kategori barang yang terdaftar.
                         </div>
                     @endforelse
@@ -124,8 +143,37 @@
         </div>
     </div>
 
+    {{-- Modal Import --}}
+    <div id="importModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-0">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+            <button onclick="toggleImportModal()"
+                class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
+            <h3 class="text-lg font-semibold mb-4">Import Data Barang dari Excel</h3>
+
+            <form method="POST" action="{{ route('items.import') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label class="block text-sm font-medium mb-1">Pilih File Excel</label>
+                    <input type="file" name="file" accept=".xlsx,.xls" required
+                        class="w-full border-gray-300 rounded p-2 text-sm">
+                    <small class="text-gray-500 text-sm">Format kolom wajib:
+                        <b>Kategori, Nama_Barang, Satuan, Keterangan</b></small>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" onclick="toggleImportModal()"
+                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded">Batal</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- Modal Edit --}}
-    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div id="editModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-0">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
             <button type="button" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
                 onclick="document.getElementById('editModal').classList.add('hidden')">✕</button>
@@ -147,7 +195,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="block text-sm font-medium mb-1">Nama Barang</label>
+                    <label class="block text-sm font-medium mb-1">Jenis Barang</label>
                     <input id="edit_name" type="text" name="name" class="w-full border-gray-300 rounded p-2"
                         required>
                 </div>
@@ -187,9 +235,9 @@
         </div>
     </div>
 
-
     {{-- Modal Tambah --}}
-    <div id="createModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div id="createModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 sm:p-0">
         <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
             <button onclick="toggleCreateModal()"
                 class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
@@ -208,7 +256,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="block text-sm font-medium mb-1">Nama Barang</label>
+                    <label class="block text-sm font-medium mb-1">Jenis Barang</label>
                     <input type="text" name="name" class="w-full border-gray-300 rounded p-2" required>
                 </div>
 
@@ -238,9 +286,12 @@
     </div>
 
     <script>
-        // Buka modal tambah
         function toggleCreateModal() {
             document.getElementById('createModal').classList.toggle('hidden');
+        }
+
+        function toggleImportModal() {
+            document.getElementById('importModal').classList.toggle('hidden');
         }
 
         // Inisialisasi tombol edit
@@ -253,16 +304,12 @@
                 const desc = btn.dataset.description || '';
                 const photo = btn.dataset.photo || '';
 
-                // Set action form
                 document.getElementById('editForm').action = "{{ url('items') }}/" + id;
-
-                // Isi field
                 document.getElementById('edit_name').value = name;
                 document.getElementById('edit_unit').value = unit;
                 document.getElementById('edit_category').value = catId;
                 document.getElementById('edit_description').value = desc;
 
-                // Preview foto
                 const img = document.getElementById('edit_photo_preview');
                 const noPhoto = document.getElementById('edit_no_photo');
                 if (photo) {
@@ -274,7 +321,6 @@
                     noPhoto.classList.remove('hidden');
                 }
 
-                // Tampilkan modal
                 document.getElementById('editModal').classList.remove('hidden');
             });
         });
@@ -288,5 +334,4 @@
             }
         }, 5000);
     </script>
-
 </x-app-layout>

@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     // Item Categories
     Route::resource('item-categories', ItemCategoryController::class);
     // Items
+    Route::post('/items/import', [ItemController::class, 'import'])->name('items.import');
     Route::resource('items', ItemController::class);
     // Item Supliers
     Route::resource('item-suppliers', ItemSupplierController::class);

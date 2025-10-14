@@ -6,17 +6,26 @@ use App\Models\Item;
 use App\Models\ItemCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ItemImport;
 
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $categories = ItemCategory::orderBy('category')->get();
-        $items = Item::with('category')->orderBy('item_category_id')->get();
 
-        return view('items.index', compact('items', 'categories'));
+        $selectedCategory = $request->get('category'); // kategori terpilih
+        $items = Item::with('category')
+            ->when($selectedCategory, function ($query) use ($selectedCategory) {
+                $query->where('item_category_id', $selectedCategory);
+            })
+            ->orderBy('item_category_id')
+            ->get();
+
+        return view('items.index', compact('items', 'categories', 'selectedCategory'));
     }
+
 
     public function store(Request $request)
     {
@@ -78,5 +87,17 @@ class ItemController extends Controller
         }
         $item->delete();
         return redirect()->back()->with('success', 'Barang berhasil dihapus.');
+    }
+
+    // 🔹 NEW: Import Excel
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new ItemImport, $request->file('file'));
+
+        return redirect()->back()->with('success', 'Data barang berhasil diimport dari Excel.');
     }
 }

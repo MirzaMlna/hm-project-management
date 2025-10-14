@@ -164,6 +164,9 @@
                     <x-dropdown-link :href="route('workers.index')">
                         <i class="bi bi-people me-2"></i>Data Tukang
                     </x-dropdown-link>
+                    <x-dropdown-link :href="route('worker-bonuses.index')">
+                        <i class="bi bi-cash me-2"></i>Bonus Tukang
+                    </x-dropdown-link>
                     <div class="text-sm ms-3 font-bold">Presensi</div>
                     <x-dropdown-link :href="route('worker-presence-schedules.index')">
                         <i class="bi bi-clock me-2"></i> Jadwal Presensi

@@ -20,7 +20,7 @@
                 {{-- Header --}}
                 <div class="flex flex-row justify-between items-center gap-3 mb-4">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
-                        <i class="bi bi-geo-alt text-sky-600"></i> Daftar Titik Pembangunan
+                        <i class=""></i>
                     </h3>
                     <x-primary-button onclick="toggleCreateModal()" class="flex items-center gap-2 !w-auto">
                         <i class="bi bi-plus-circle"></i>

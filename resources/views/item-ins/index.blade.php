@@ -20,32 +20,26 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 {{-- Header kiri-kanan --}}
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center px-6 mt-6 gap-3">
-                    {{-- Judul --}}
-                    <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class="bi bi-box-arrow-in-down text-sky-600"></i> Daftar Barang Masuk
-                    </h3>
+                <div class="flex flex-wrap justify-between items-center px-6 mt-6 gap-3">
+                    {{-- Filter Bulan --}}
+                    <form method="GET" action="{{ route('item-ins.index') }}" class="flex items-center gap-2">
+                        <label for="month" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+                            Filter Bulan:
+                        </label>
+                        <input type="month" id="month" name="month" value="{{ $selectedMonth }}"
+                            class="border-gray-300 rounded p-2 text-sm focus:border-sky-500 focus:ring-sky-500 transition"
+                            onchange="this.form.submit()">
+                    </form>
 
-                    {{-- Bagian kanan: filter + tombol tambah --}}
-                    <div class="flex flex-row items-center gap-3 w-full sm:w-auto">
-                        {{-- Filter Bulan --}}
-                        <form method="GET" action="{{ route('item-ins.index') }}"
-                            class="flex items-center gap-2 w-full sm:w-auto">
-                            <label for="month" class="text-sm font-medium text-gray-700 whitespace-nowrap">
-                                Filter Bulan:
-                            </label>
-                            <input type="month" id="month" name="month" value="{{ $selectedMonth }}"
-                                class="border-gray-300 rounded p-2 text-sm w-full sm:w-auto"
-                                onchange="this.form.submit()">
-                        </form>
-
-                        {{-- Tombol hanya ikon --}}
+                    {{-- Tombol kanan --}}
+                    <div class="flex items-center gap-2">
                         <x-primary-button class="w-10 h-10 flex items-center justify-center"
                             onclick="toggleCreateModal()" title="Tambah Barang Masuk">
                             <i class="bi bi-plus-circle text-lg"></i>
                         </x-primary-button>
                     </div>
                 </div>
+
 
 
 

@@ -20,7 +20,7 @@
                 {{-- Header kiri-kanan --}}
                 <div class="flex justify-between items-center px-6 mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class="bi bi-truck text-sky-600"></i> Daftar Pemasok
+                        <i class=""></i>
                     </h3>
 
                     <x-primary-button onclick="toggleCreateModal()" title="Tambah Pemasok">
@@ -31,7 +31,7 @@
 
                 {{-- Tabel --}}
                 <div class="p-6 text-gray-900">
-                    <div class="overflow-x-auto mt-2">
+                    <div class="overflow-x-auto">
                         <table class="min-w-full text-sm text-left text-gray-600 border border-gray-200">
                             <thead class="text-xs text-white uppercase bg-sky-700">
                                 <tr>
