@@ -80,6 +80,9 @@
                                 <x-dropdown-link :href="route('item-outs.index')">
                                     <i class="bi bi-box-arrow-left me-2"></i>Barang Keluar
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('item-logs.index')">
+                                    <i class="bi bi-graph-up me-2"></i>Catatan Arus Stok
+                                </x-dropdown-link>
                             </x-slot>
                         </x-dropdown>
                     </div>
@@ -209,6 +212,9 @@
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('item-outs.index')">
                         <i class="bi bi-box-arrow-left me-2"></i>Barang Keluar
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('item-logs.index')">
+                        <i class="bi bi-graph-up me-2"></i>Catatan Arus Stok
                     </x-dropdown-link>
                 </x-slot>
             </x-dropdown>

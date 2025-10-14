@@ -4,6 +4,7 @@ use App\Http\Controllers\DevelopmentPointController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemInController;
+use App\Http\Controllers\ItemLogController;
 use App\Http\Controllers\ItemOutController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemSupplierController;
@@ -76,6 +77,8 @@ Route::middleware('auth')->group(function () {
     // Outgoing Items
     Route::get('/get-items-by-category/{id}', [ItemOutController::class, 'getItemsByCategory']);
     Route::resource('item-outs', ItemOutController::class);
+    // Item Logs
+    Route::resource('item-logs', ItemLogController::class);
 });
 
 require __DIR__ . '/auth.php';
