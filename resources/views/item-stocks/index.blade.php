@@ -19,25 +19,43 @@
             {{-- Card utama --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                {{-- Header kiri-kanan --}}
-                <div class="flex justify-between items-center px-6 mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <i class=""></i>
-                    </h3>
+                <div class="flex items-center justify-between px-6 mt-6 gap-2 flex-wrap">
+                    {{-- 🔹 Kiri: Dropdown Filter --}}
+                    <form method="GET" action="{{ route('item-stocks.index') }}">
+                        <select name="category" onchange="this.form.submit()"
+                            class="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 bg-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition w-48">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($allCategories as $cat)
+                                <option value="{{ $cat->id }}"
+                                    {{ $selectedCategory == $cat->id ? 'selected' : '' }}>
+                                    {{ $cat->category }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
 
-                    <div class="flex gap-2">
+                    {{-- 🔹 Kanan: Tombol Export & Tambah --}}
+                    <div class="flex items-center gap-2">
+                        {{-- 🔹 Tombol Export --}}
                         <a href="{{ route('item-stocks.export') }}"
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded flex items-center gap-2">
-                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md
+               text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400
+               transition duration-150 ease-in-out shadow-sm">
+                            <i class="bi bi-file-earmark-spreadsheet text-base"></i>
+                            <span>Export</span>
                         </a>
 
-                        <x-primary-button onclick="toggleCreateModal()" title="Tambah Stok">
-                            <i class="bi bi-plus-circle"></i>
-                        </x-primary-button>
+                        {{-- 🔹 Tombol Tambah --}}
+                        <button type="button" onclick="toggleCreateModal()"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium rounded-md
+               text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400
+               transition duration-150 ease-in-out shadow-sm">
+                            <i class="bi bi-plus-circle text-base"></i>
+                            <span>Tambah</span>
+                        </button>
                     </div>
+
                 </div>
-
-
 
                 {{-- Loop per kategori --}}
                 <div class="p-6 text-gray-900 space-y-8">
@@ -48,6 +66,7 @@
                             );
                         @endphp
 
+
                         <div class="rounded border border-gray-200 shadow-sm">
                             {{-- Header kategori --}}
                             <div class="bg-sky-700 text-white px-4 py-2 rounded-t font-semibold">
@@ -56,54 +75,73 @@
 
                             {{-- Tabel stok --}}
                             <div class="overflow-x-auto">
-                                <table class="min-w-full text-sm text-left text-gray-600">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <table
+                                    class="min-w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg overflow-hidden">
+                                    <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
                                         <tr>
-                                            <th class="px-4 py-3 text-start w-12">#</th>
+                                            <th class="px-4 py-3 text-center w-12">#</th>
                                             <th class="px-4 py-3">Barang</th>
                                             <th class="px-4 py-3">Satuan</th>
-                                            <th class="px-4 py-3 text-start">Stok Saat Ini</th>
-                                            <th class="px-4 py-3 text-start">Minimal</th>
-                                            <th class="px-4 py-3 text-start">Terakhir Diperbarui</th>
-                                            <th class="px-4 py-3 text-start w-24">Aksi</th>
+                                            <th class="px-4 py-3 text-center">Stok Saat Ini</th>
+                                            <th class="px-4 py-3 text-center">Minimal</th>
+                                            <th class="px-4 py-3 text-center">Terakhir Diperbarui</th>
+                                            <th class="px-4 py-3 text-center w-24">Aksi</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         @forelse ($categoryStocks as $stock)
-                                            <tr class="bg-white border-b border-gray-200 hover:bg-gray-50">
-                                                <td class="px-4 py-3 text-start">{{ $loop->iteration }}</td>
-                                                <td class="px-4 py-3 font-semibold">{{ $stock->item->name ?? '-' }}</td>
-                                                <td class="px-4 py-3">{{ $stock->item->unit ?? '-' }}</td>
-                                                <td class="px-4 py-3 text-start">{{ $stock->current_stock }}</td>
-                                                <td class="px-4 py-3 text-start">{{ $stock->minimum_stock ?? '-' }}
+                                            <tr class="bg-white border-b border-gray-100 hover:bg-sky-50 transition">
+                                                <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
+
+                                                <td class="px-4 py-3 font-semibold text-gray-800">
+                                                    {{ $stock->item->name ?? '-' }}
                                                 </td>
-                                                <td class="px-4 py-3 text-start">
+
+                                                <td class="px-4 py-3 text-gray-600">
+                                                    {{ $stock->item->unit ?? '-' }}
+                                                </td>
+
+                                                <td class="px-4 py-3 text-center font-medium">
+                                                    {{ $stock->current_stock }}
+                                                </td>
+
+                                                <td class="px-4 py-3 text-center text-gray-700">
+                                                    {{ $stock->minimum_stock ?? '-' }}
+                                                </td>
+
+                                                <td class="px-4 py-3 text-center text-gray-600 whitespace-nowrap">
                                                     {{ $stock->last_updated ? \Carbon\Carbon::parse($stock->last_updated)->translatedFormat('d M Y H:i') : '-' }}
                                                 </td>
-                                                <td class="px-4 py-3 text-start space-x-2">
-                                                    <button type="button" class="btn-edit"
-                                                        data-id="{{ $stock->id }}"
-                                                        data-current="{{ $stock->current_stock }}"
-                                                        data-minimum="{{ $stock->minimum_stock }}">
-                                                        <i
-                                                            class="bi bi-pencil-square text-yellow-500 hover:text-yellow-600"></i>
-                                                    </button>
 
-                                                    <form action="{{ route('item-stocks.destroy', $stock->id) }}"
-                                                        method="POST" class="inline"
-                                                        onsubmit="return confirm('Yakin ingin menghapus stok ini?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit">
-                                                            <i class="bi bi-trash3 text-red-500 hover:text-red-600"></i>
+                                                <td class="px-4 py-3 text-center">
+                                                    <div class="flex justify-center items-center gap-3">
+                                                        <button type="button" class="btn-edit"
+                                                            data-id="{{ $stock->id }}"
+                                                            data-current="{{ $stock->current_stock }}"
+                                                            data-minimum="{{ $stock->minimum_stock }}">
+                                                            <i
+                                                                class="bi bi-pencil-square text-yellow-500 hover:text-yellow-600 text-base"></i>
                                                         </button>
-                                                    </form>
+
+                                                        <form action="{{ route('item-stocks.destroy', $stock->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Yakin ingin menghapus stok ini?')"
+                                                            class="inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit">
+                                                                <i
+                                                                    class="bi bi-trash3 text-red-500 hover:text-red-600 text-base"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
                                                 <td colspan="7"
-                                                    class="text-start py-4 text-gray-500 italic bg-gray-50">
+                                                    class="text-center py-6 text-gray-500 italic bg-gray-50">
                                                     Tidak ada stok dalam kategori ini.
                                                 </td>
                                             </tr>
@@ -111,6 +149,7 @@
                                     </tbody>
                                 </table>
                             </div>
+
                         </div>
                     @empty
                         <div class="text-start text-gray-500 py-10">

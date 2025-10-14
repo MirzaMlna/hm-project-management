@@ -12,13 +12,29 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ItemStockController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stocks = ItemStock::with('item')->orderBy('id', 'desc')->paginate(10);
-        $items = Item::orderBy('name')->get();
-        $categories = ItemCategory::orderBy('category')->get(); // 🔹 ditambahkan
-        return view('item-stocks.index', compact('stocks', 'items', 'categories'));
+        $allCategories   = ItemCategory::orderBy('category')->get();
+        $selectedCategory = $request->get('category');
+
+        $stocks = ItemStock::with('item')
+            ->when($selectedCategory, function ($q) use ($selectedCategory) {
+                $q->whereHas('item', function ($qq) use ($selectedCategory) {
+                    $qq->where('item_category_id', $selectedCategory);
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // 🔹 untuk blok/tabel yang dirender
+        $categories = $selectedCategory
+            ? ItemCategory::whereKey($selectedCategory)->get()
+            : $allCategories;
+
+        return view('item-stocks.index', compact('stocks', 'categories', 'selectedCategory', 'allCategories'));
     }
+
+
 
     public function store(Request $request)
     {
@@ -61,6 +77,7 @@ class ItemStockController extends Controller
         $itemStock->delete();
         return redirect()->back()->with('success', 'Data stok berhasil dihapus.');
     }
+
     public function getByCategory($id)
     {
         $items = Item::where('item_category_id', $id)
