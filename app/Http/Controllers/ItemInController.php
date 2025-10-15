@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemInExport;
 use App\Models\ItemCategory;
 use App\Models\ItemIn;
 use App\Models\Item;
@@ -10,6 +11,7 @@ use App\Models\ItemSupplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemInController extends Controller
 {
@@ -110,5 +112,13 @@ class ItemInController extends Controller
             ->get(['id', 'name']);
 
         return response()->json($items);
+    }
+
+    public function export(Request $request)
+    {
+        $selectedMonth = $request->get('month', now()->format('Y-m'));
+        $fileName = 'Barang_Masuk_' . $selectedMonth . '.xlsx';
+
+        return Excel::download(new ItemInExport($selectedMonth), $fileName);
     }
 }

@@ -37,6 +37,11 @@
                             onclick="toggleCreateModal()" title="Tambah Barang Masuk">
                             <i class="bi bi-plus-circle text-lg"></i>
                         </x-primary-button>
+                        <a href="{{ route('item-ins.export', ['month' => $selectedMonth]) }}"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm flex items-center gap-2">
+                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                        </a>
+
                     </div>
                 </div>
 

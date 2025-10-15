@@ -71,9 +71,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/item-stocks/export', [ItemStockController::class, 'export'])->name('item-stocks.export');
     Route::resource('item-stocks', ItemStockController::class);
     // Incoming Items
-    Route::resource('item-ins', ItemInController::class);
+    Route::get('/item-ins/export', [ItemInController::class, 'export'])->name('item-ins.export');
     Route::get('/get-items-by-category/{id}', [ItemInController::class, 'getItemsByCategory'])
         ->name('item-ins.get-items');
+    Route::resource('item-ins', ItemInController::class);
     // Outgoing Items
     Route::get('/get-items-by-category/{id}', [ItemOutController::class, 'getItemsByCategory']);
     Route::resource('item-outs', ItemOutController::class);
