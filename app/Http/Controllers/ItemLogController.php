@@ -19,50 +19,54 @@ class ItemLogController extends Controller
         // 🔹 Ambil filter bulan (default = bulan sekarang)
         $selectedMonth = $request->get('month', Carbon::now()->format('Y-m'));
 
-        // Ambil range tanggal awal dan akhir bulan
         $startOfMonth = Carbon::parse($selectedMonth . '-01')->startOfMonth();
         $endOfMonth   = Carbon::parse($selectedMonth . '-01')->endOfMonth();
 
         // 🔹 Barang Masuk
         $ins = ItemIn::with(['item.category'])
             ->whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
-            ->select('id', 'item_id', 'purchase_date as date', 'quantity', 'created_at')
             ->get()
             ->map(function ($row) {
+                $item = optional($row->item);
+                $category = optional($item->category);
+
                 return [
                     'item_id'       => $row->item_id,
-                    'kategori'      => $row->item->category->category ?? '-',
-                    'jenis'         => $row->item->name ?? '-',
-                    'tanggal'       => $row->date,
+                    'kategori'      => $category->category ?? '-',
+                    'jenis'         => $item->name ?? 'Barang Dihapus',
+                    'tanggal'       => $row->purchase_date,
                     'created_at'    => $row->created_at,
                     'barang_masuk'  => (int) $row->quantity,
                     'barang_keluar' => 0,
                     'tipe'          => 'in',
                 ];
-            });
+            })
+            ->values()
+            ->toArray();
 
-        // 🔹 Barang Keluar
         $outs = ItemOut::with(['item.category'])
             ->whereBetween('date_out', [$startOfMonth, $endOfMonth])
-            ->select('id', 'item_id', 'date_out as date', 'quantity', 'created_at')
             ->get()
             ->map(function ($row) {
+                $item = optional($row->item);
+                $category = optional($item->category);
+
                 return [
                     'item_id'       => $row->item_id,
-                    'kategori'      => $row->item->category->category ?? '-',
-                    'jenis'         => $row->item->name ?? '-',
-                    'tanggal'       => $row->date,
+                    'kategori'      => $category->category ?? '-',
+                    'jenis'         => $item->name ?? 'Barang Dihapus',
+                    'tanggal'       => $row->date_out,
                     'created_at'    => $row->created_at,
                     'barang_masuk'  => 0,
                     'barang_keluar' => (int) $row->quantity,
                     'tipe'          => 'out',
                 ];
-            });
+            })
+            ->values()
+            ->toArray();
 
-        // 🔹 Gabungkan semua transaksi
-        $rows = $ins->merge($outs);
+        $rows = collect($ins)->merge($outs)->values();
 
-        // 🔹 Hitung stok berjalan per item
         $rowsByItem = $rows->groupBy('item_id')->flatMap(function (Collection $group, $itemId) {
             $sorted = $group->sort(function ($a, $b) {
                 if ($a['tanggal'] != $b['tanggal']) return strcmp($a['tanggal'], $b['tanggal']);
@@ -73,8 +77,8 @@ class ItemLogController extends Controller
 
             $totalIn  = $sorted->sum('barang_masuk');
             $totalOut = $sorted->sum('barang_keluar');
-            $currentStock = (int) optional(ItemStock::where('item_id', $itemId)->first())->current_stock;
 
+            $currentStock = (int) optional(ItemStock::where('item_id', $itemId)->first())->current_stock;
             $openingStock = $currentStock - ($totalIn - $totalOut);
             $running = $openingStock;
 
@@ -87,6 +91,7 @@ class ItemLogController extends Controller
                     'kategori'      => $r['kategori'],
                     'jenis'         => $r['jenis'],
                     'tanggal'       => $r['tanggal'],
+                    'created_at'    => $r['created_at'], // ✅ tambahkan ini
                     'barang_masuk'  => $r['barang_masuk'],
                     'barang_keluar' => $r['barang_keluar'],
                     'stok'          => $running,
@@ -94,10 +99,12 @@ class ItemLogController extends Controller
             });
         });
 
-        // 🔹 Urutkan dari terbaru ke terlama
-        $logs = $rowsByItem->sortByDesc(fn($log) => $log['tanggal'])->values();
+        // 🔹 Urutkan berdasarkan tanggal dan waktu pembuatan (terbaru di atas)
+        $logs = $rowsByItem->sortByDesc(function ($item) {
+            return $item['tanggal'] . ' ' . ($item['created_at'] ?? '0000-00-00 00:00:00');
+        })->values();
 
-        // 🔹 Paginasi manual (karena ini Collection, bukan query)
+        // 🔹 Pagination
         $perPage = 20;
         $page = request()->get('page', 1);
         $paginated = new LengthAwarePaginator(
@@ -108,7 +115,7 @@ class ItemLogController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        // 🔹 Daftar bulan (untuk dropdown filter)
+        // 🔹 Daftar bulan
         $months = collect(range(0, 11))->map(function ($i) {
             $date = Carbon::now()->subMonths($i);
             return [
@@ -123,6 +130,9 @@ class ItemLogController extends Controller
             'selectedMonth' => $selectedMonth,
         ]);
     }
+
+
+    // 🔹 Export ke Excel
     public function export(Request $request)
     {
         $selectedMonth = $request->get('month', Carbon::now()->format('Y-m'));

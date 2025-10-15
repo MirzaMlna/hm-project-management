@@ -28,6 +28,7 @@ class ItemOutController extends Controller
             ->whereYear('date_out', substr($selectedMonth, 0, 4))
             ->whereMonth('date_out', substr($selectedMonth, 5, 2))
             ->orderBy('date_out', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         return view('item-outs.index', compact('itemOuts', 'categories', 'points', 'selectedMonth'));

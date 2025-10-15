@@ -30,6 +30,7 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
         $startOfMonth = Carbon::parse($this->selectedMonth . '-01')->startOfMonth();
         $endOfMonth   = Carbon::parse($this->selectedMonth . '-01')->endOfMonth();
 
+        // 🔹 Data barang masuk
         $ins = ItemIn::with(['item.category'])
             ->whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
             ->get()
@@ -41,9 +42,11 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
                     'tanggal'       => Carbon::parse($row->purchase_date),
                     'barang_masuk'  => (int) $row->quantity,
                     'barang_keluar' => 0,
+                    'created_at'    => $row->created_at,
                 ];
             });
 
+        // 🔹 Data barang keluar
         $outs = ItemOut::with(['item.category'])
             ->whereBetween('date_out', [$startOfMonth, $endOfMonth])
             ->get()
@@ -55,12 +58,18 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
                     'tanggal'       => Carbon::parse($row->date_out),
                     'barang_masuk'  => 0,
                     'barang_keluar' => (int) $row->quantity,
+                    'created_at'    => $row->created_at,
                 ];
             });
 
-        // Urutkan berdasarkan tanggal
-        $logs = $ins->merge($outs)->sortBy('tanggal')->values();
+        // 🔹 Gabung & urutkan DESC (terbaru di atas)
+        $logs = $ins->merge($outs)
+            ->sortByDesc(function ($item) {
+                return $item['tanggal']->format('Y-m-d') . ' ' . $item['created_at'];
+            })
+            ->values();
 
+        // 🔹 Ambil stok awal
         $initialStocks = ItemStock::pluck('current_stock', 'item_id');
 
         $runningStocks = [];
@@ -70,11 +79,15 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
             $itemId = $log['item_id'];
             $currentStock = $runningStocks[$itemId] ?? ($initialStocks[$itemId] ?? 0);
 
-            // Hitung stok baru
-            $currentStock += $log['barang_masuk'];
-            $currentStock -= $log['barang_keluar'];
+            // Karena kita urutkan dari terbaru ke lama, hitung stok mundur
+            // Jadi stok setelah transaksi = stok sekarang
+            // Jika barang masuk berarti sebelumnya lebih sedikit
+            // Jika barang keluar berarti sebelumnya lebih banyak
+            $previousStock = $currentStock;
+            $previousStock -= $log['barang_masuk'];
+            $previousStock += $log['barang_keluar'];
 
-            $runningStocks[$itemId] = $currentStock;
+            $runningStocks[$itemId] = $previousStock;
 
             $finalLogs->push([
                 'kategori'      => $log['kategori'],
@@ -86,8 +99,8 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
             ]);
         }
 
-        // Tambah nomor urut
-        $finalLogs = $finalLogs->map(function ($item, $index) {
+        // 🔹 Tambah nomor urut
+        $finalLogs = $finalLogs->values()->map(function ($item, $index) {
             return array_merge(['no' => $index + 1], $item);
         });
 
@@ -143,8 +156,9 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
             ],
         ]);
 
-        // Style isi tabel umum
         $highestRow = $sheet->getHighestRow();
+
+        // Style isi tabel
         $sheet->getStyle("A5:G$highestRow")->applyFromArray([
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -159,16 +173,14 @@ class ItemLogExport implements FromCollection, WithHeadings, WithStyles
         $sheet->getStyle("C6:C$highestRow")->getFont()->setBold(true);
         $sheet->getStyle("E6:F$highestRow")->getFont()->setBold(true);
 
-        // ✅ Conditional formatting warna hijau/merah
+        // ✅ Warna hijau/merah sesuai tipe transaksi
         for ($row = 6; $row <= $highestRow; $row++) {
             $masuk  = $sheet->getCell("E$row")->getValue();
             $keluar = $sheet->getCell("F$row")->getValue();
 
             if ($masuk > 0) {
-                // Barang masuk = hijau
                 $sheet->getStyle("E$row:G$row")->getFont()->getColor()->setRGB('008000'); // hijau
             } elseif ($keluar > 0) {
-                // Barang keluar = merah
                 $sheet->getStyle("E$row:G$row")->getFont()->getColor()->setRGB('FF0000'); // merah
             }
         }

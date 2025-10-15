@@ -28,10 +28,11 @@ class ItemInController extends Controller
             ->whereYear('purchase_date', substr($selectedMonth, 0, 4))
             ->whereMonth('purchase_date', substr($selectedMonth, 5, 2))
             ->orderBy('purchase_date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
-
         return view('item-ins.index', compact('itemIns', 'items', 'suppliers', 'categories', 'selectedMonth'));
     }
+
 
 
 
