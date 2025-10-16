@@ -29,128 +29,14 @@
                 </div>
             @endif
 
-            <!-- Statistik -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                <!-- Total Workers -->
-                <div
-                    class="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500 flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Total Tukang</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $totalWorkers }}</p>
-                    </div>
-                    <div class="bg-blue-100 p-3 rounded-full">
-                        <i class="bi bi-people text-blue-600 text-2xl"></i>
-                    </div>
-                </div>
-                <!-- Active Workers -->
-                <div
-                    class="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500 flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Tukang Aktif</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ $activeWorkers }}</p>
-                    </div>
-                    <div class="bg-green-100 p-3 rounded-full">
-                        <i class="bi bi-check-circle text-green-600 text-2xl"></i>
-                    </div>
-                </div>
-                <!-- Daily Salary -->
-                <div
-                    class="bg-white rounded-xl shadow-md p-5 border-l-4 border-amber-500 flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">Total Gaji Harian</p>
-                        <p class="text-2xl font-bold text-gray-800">
-                            Rp{{ number_format($totalDailySalary, 0, ',', '.') }}
-                        </p>
-                    </div>
-                    <div class="bg-amber-100 p-3 rounded-full">
-                        <i class="bi bi-wallet2 text-amber-600 text-2xl"></i>
-                    </div>
-                </div>
-            </div>
+            @include('workers.partials._cards')
 
             <!-- Tabel Tukang -->
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <div class="flex justify-between items-center mb-4 px-1 gap-3">
-                    <h3 class="text-lg font-semibold flex items-center gap-2">
-                        <i class="bi bi-person-check"></i> Daftar Tukang Aktif
-                    </h3>
-                    <div class="flex items-center gap-2">
-                        <button onclick="openImportModal()"
-                            class="px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded flex items-center justify-center">
-                            <i class="bi bi-upload"></i>
-                        </button>
-                        <a href="{{ route('workers.create') }}"
-                            class="px-3 py-2 bg-sky-800 hover:bg-sky-700 text-white rounded flex items-center justify-center">
-                            <i class="bi bi-person-plus"></i>
-                        </a>
-                        <a href="{{ route('workers.printAll') }}"
-                            class="px-3 py-2 bg-green-600 hover:bg-green-500 text-white rounded flex items-center justify-center">
-                            <i class="bi bi-printer"></i>
-                        </a>
-                    </div>
-                </div>
 
 
-                <div class="overflow-x-auto border rounded-lg">
-                    <table class="min-w-full text-xs">
-                        <thead class="bg-sky-800 text-white">
-                            <tr>
-                                <th class="px-4 py-3">NO</th>
-                                <th class="px-4 py-3">KATEGORI</th>
-                                <th class="px-4 py-3">NAMA</th>
-                                <th class="px-4 py-3">KODE</th>
-                                <th class="px-4 py-3">GAJI HARIAN (Rp.)</th>
-                                <th class="px-4 py-3">NO. TELP</th>
-                                <th class="px-4 py-3">USIA</th>
-                                <th class="px-4 py-3">AKSI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($workers as $index => $worker)
-                                <tr class="text-start border-b hover:bg-gray-50">
-                                    <td class="px-4 py-2">{{ $workers->firstItem() + $index }}</td>
-                                    <td class="px-4 py-2 text-gray-500">{{ $worker->category->category ?? '-' }}</td>
-                                    <td class="px-4 py-2 font-semibold">{{ $worker->name }}</td>
-                                    <td class="px-4 py-2">{{ $worker->code }}</td>
-                                    <td class="px-4 py-2">{{ number_format($worker->daily_salary, 0, ',', '.') }}</td>
-                                    <td class="px-4 py-2">{{ $worker->phone }}</td>
-                                    <td class="px-4 py-2">
-                                        {{ $worker->birth_date ? \Carbon\Carbon::parse($worker->birth_date)->age : '-' }}
-                                    </td>
-                                    <td class="px-4 py-2 flex justify-center gap-3">
-                                        <a href="{{ route('workers.show', $worker->id) }}" title="Cetak ID Card"
-                                            class="text-blue-600 hover:text-blue-900">
-                                            <i class="bi bi-person-vcard"></i>
-                                        </a>
-                                        <a href="{{ route('workers.edit', $worker->id) }}" title="Edit"
-                                            class="text-yellow-600 hover:text-yellow-900">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button
-                                            onclick="openDeactivateModal({{ $worker->id }}, '{{ $worker->name }}')"
-                                            title="Nonaktifkan" class="text-gray-600 hover:text-gray-900">
-                                            <i class="bi bi-person-slash"></i>
-                                        </button>
-                                        <form action="{{ route('workers.destroy', $worker->id) }}" method="POST"
-                                            onsubmit="return confirm('Hapus data ini?')" class="inline">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" title="Hapus"
-                                                class="text-red-600 hover:text-red-900">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="py-4 text-start text-gray-500">
-                                        Tidak ada tukang ditambahkan.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                @include('workers.partials._buttons')
+                @include('workers.partials._table')
 
                 <div class="mt-4">
                     {{ $workers->links() }}
@@ -160,41 +46,9 @@
     </div>
 
 
-    @include('workers.deactive-modal');
-    @include('workers.excel-export-modal');
+    @include('workers.partials._deactive-modal');
+    @include('workers.partials._excel-export-modal');
 
 </x-app-layout>
 
-<script>
-    function openDeactivateModal(workerId, workerName) {
-        document.getElementById('deactivateModal').classList.remove('hidden');
-        document.getElementById('workerNameModal').textContent = workerName;
-        const form = document.getElementById('deactivateForm');
-        form.action = '/workers/' + workerId + '/deactivate';
-        form.note.value = '';
-    }
-
-    function closeDeactivateModal() {
-        document.getElementById('deactivateModal').classList.add('hidden');
-    }
-
-    function openImportModal() {
-        document.getElementById('importModal').classList.remove('hidden');
-    }
-
-    function closeImportModal() {
-        document.getElementById('importModal').classList.add('hidden');
-    }
-
-    // Auto-hide alert
-    setTimeout(() => {
-        const successAlert = document.getElementById('alert-success');
-        const errorAlert = document.getElementById('alert-error');
-        [successAlert, errorAlert].forEach(alert => {
-            if (alert) {
-                alert.classList.add('opacity-0');
-                setTimeout(() => alert.remove(), 500);
-            }
-        });
-    }, 5000);
-</script>
+@include('workers.partials._script')
