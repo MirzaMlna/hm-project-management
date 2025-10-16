@@ -23,7 +23,8 @@
 
         {{-- Konten utama --}}
         <div class="text-center px-6 sm:px-10">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-sky-800 mb-4 animate-fade-in-down">
+            <h1
+                class="text-4xl sm:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-700 to-blue-500 mb-4 animate-fade-in-down">
                 Selamat Datang di <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-700 to-blue-500">
                     HM Project Management System
