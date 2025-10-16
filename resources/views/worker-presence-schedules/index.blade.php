@@ -1,15 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Rentang Waktu Presensi
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight flex items-center gap-2">
+            <i class="bi bi-clock-history text-sky-700"></i> Rentang Waktu Presensi
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- Card utama --}}
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-
+    <div class="py-8">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-md sm:rounded-xl p-8 border border-gray-100">
                 {{-- Alert sukses/gagal --}}
                 @if (session('success'))
                     <div id="alert-success"
@@ -25,68 +23,57 @@
                 @endif
 
                 {{-- Judul --}}
-                <h3 class="font-semibold mb-2 flex items-center text-lg text-gray-800">
-                    <i class="bi bi-clock-history mr-2 text-sky-600"></i> Pengaturan Rentang Waktu Presensi
-                </h3>
-                <p class="text-sm text-gray-600 mb-6">
-                    {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
-                </p>
+                <div class="mb-6 text-center md:text-left">
+                    <h3 class="text-lg font-semibold text-gray-800">Pengaturan Rentang Waktu Presensi</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Atur waktu mulai dan berakhir untuk setiap sesi presensi harian.
+                    </p>
+                </div>
 
                 {{-- Form --}}
                 <form id="timeSettingsForm" action="{{ route('worker-presence-schedules.save') }}" method="POST"
                     class="space-y-6">
                     @csrf
 
-                    {{-- Check In 1 --}}
+                    {{-- Presensi 1 --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                        <label class="font-medium">Check-In 1</label>
+                        <label class="font-medium text-gray-700">Presensi 1</label>
                         <input type="time" name="first_check_in_start"
                             value="{{ old('first_check_in_start', $schedule->first_check_in_start ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                         <input type="time" name="first_check_in_end"
                             value="{{ old('first_check_in_end', $schedule->first_check_in_end ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                     </div>
 
-                    {{-- Check In 2 --}}
+                    {{-- Presensi 2 --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                        <label class="font-medium">Check-In 2</label>
+                        <label class="font-medium text-gray-700">Presensi 2</label>
                         <input type="time" name="second_check_in_start"
                             value="{{ old('second_check_in_start', $schedule->second_check_in_start ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                         <input type="time" name="second_check_in_end"
                             value="{{ old('second_check_in_end', $schedule->second_check_in_end ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                     </div>
 
-                    {{-- Check Out --}}
+                    {{-- Presensi Pulang --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                        <label class="font-medium">Check-Out</label>
+                        <label class="font-medium text-gray-700">Presensi Pulang</label>
                         <input type="time" name="check_out_start"
                             value="{{ old('check_out_start', $schedule->check_out_start ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                         <input type="time" name="check_out_end"
                             value="{{ old('check_out_end', $schedule->check_out_end ?? '') }}"
-                            class="border rounded p-2 w-full" required>
+                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
                     </div>
 
                     <hr class="my-6">
 
-                    {{-- Konfirmasi teks --}}
-                    <div>
-                        <label class="font-medium block mb-2">Konfirmasi</label>
-                        <input type="text" id="confirmationText" placeholder='Ketik "HM BUILDERS" untuk menyimpan'
-                            class="border rounded p-2 w-full focus:ring focus:ring-sky-200">
-                        <p class="text-xs text-gray-500 mt-1">
-                            * Wajib ketik persis "HM BUILDERS" (huruf besar semua)
-                        </p>
-                    </div>
-
                     {{-- Tombol Submit --}}
                     <div class="flex flex-col sm:flex-row justify-end">
-                        <button type="submit" id="saveBtn"
-                            class="bg-blue-900 hover:bg-blue-800 text-white px-6 py-2 rounded w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled>
+                        <button type="submit"
+                            class="bg-sky-700 hover:bg-sky-800 text-white px-6 py-2 rounded w-full sm:w-auto transition">
                             {{ $schedule ? 'Update Pengaturan' : 'Simpan Pengaturan' }}
                         </button>
                     </div>
@@ -95,16 +82,8 @@
         </div>
     </div>
 
-    {{-- Script --}}
+    {{-- Auto-hide alert --}}
     <script>
-        const confirmationText = document.getElementById('confirmationText');
-        const saveBtn = document.getElementById('saveBtn');
-
-        confirmationText.addEventListener('input', () => {
-            saveBtn.disabled = confirmationText.value.trim() !== "HM BUILDERS";
-        });
-
-        // Auto-hide alert
         setTimeout(() => {
             const successAlert = document.getElementById('alert-success');
             const errorAlert = document.getElementById('alert-error');

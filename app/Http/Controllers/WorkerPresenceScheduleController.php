@@ -43,7 +43,7 @@ class WorkerPresenceScheduleController extends Controller
             $message = 'Jadwal absensi berhasil disimpan.';
         }
 
-        return redirect()->route('worker-presence-schedules.index')->with('success', $message);
+        return redirect()->route('worker-presences.index')->with('success', $message);
     }
 
     private function validateTimes(Request $request)
