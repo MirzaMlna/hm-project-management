@@ -36,7 +36,5 @@
     @include('worker-presences.partials._excel-modal')
 
     {{-- 📜 SCRIPT --}}
-
-
     @include('worker-presences.partials._script')
 </x-app-layout>
