@@ -18,6 +18,23 @@
 
             {{-- Card utama --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                {{-- Card Total Pengeluaran --}}
+                <div class="px-6 mt-4">
+                    <div class="bg-sky-50 border border-sky-200 rounded-lg p-4 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-sm font-medium text-sky-700 uppercase">Total Pengeluaran Bulan Ini</h4>
+                                <p class="Atext-2xl font-bold text-gray-800 mt-1">
+                                    Rp{{ number_format($totalExpenditure, 0, ',', '.') }}
+                                </p>
+                            </div>
+                            <div class="text-sky-600">
+                                <i class="bi bi-cash-stack text-3xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Filter & tombol --}}
                 <div class="flex flex-wrap justify-between items-center px-6 mt-6 gap-3">
                     {{-- Filter Bulan --}}

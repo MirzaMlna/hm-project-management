@@ -22,21 +22,29 @@ class ItemInController extends Controller
         $suppliers = ItemSupplier::orderBy('supplier')->get();
         $categories = ItemCategory::orderBy('category')->get();
 
-        // Ambil bulan yang dipilih dari query (?month=2025-10)
-        $selectedMonth = $request->get('month', now()->format('Y-m')); // default bulan ini
+        $selectedMonth = $request->get('month', now()->format('Y-m'));
 
-        // Ambil data berdasarkan bulan yang dipilih
         $itemIns = ItemIn::with(['item', 'supplier'])
             ->whereYear('purchase_date', substr($selectedMonth, 0, 4))
             ->whereMonth('purchase_date', substr($selectedMonth, 5, 2))
             ->orderBy('purchase_date', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('item-ins.index', compact('itemIns', 'items', 'suppliers', 'categories', 'selectedMonth'));
+
+        // ✅ Hitung total pengeluaran bulan tersebut
+        $totalExpenditure = ItemIn::whereYear('purchase_date', substr($selectedMonth, 0, 4))
+            ->whereMonth('purchase_date', substr($selectedMonth, 5, 2))
+            ->sum('total_price');
+
+        return view('item-ins.index', compact(
+            'itemIns',
+            'items',
+            'suppliers',
+            'categories',
+            'selectedMonth',
+            'totalExpenditure'
+        ));
     }
-
-
-
 
     public function store(Request $request)
     {
