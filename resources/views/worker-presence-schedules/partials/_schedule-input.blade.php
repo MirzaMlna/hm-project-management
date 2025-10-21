@@ -23,16 +23,6 @@
             class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
     </div>
 
-    {{-- Presensi Pulang --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-        <label class="font-bold text-gray-700">Presensi Pulang</label>
-        <input type="time" name="check_out_start"
-            value="{{ old('check_out_start', $schedule->check_out_start ?? '') }}"
-            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
-        <input type="time" name="check_out_end" value="{{ old('check_out_end', $schedule->check_out_end ?? '') }}"
-            class="border rounded p-2 w-full focus:ring focus:ring-sky-200" required>
-    </div>
-
     <hr class="my-6">
 
     {{-- Tombol Submit --}}

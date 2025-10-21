@@ -41,11 +41,6 @@
                     class="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-lg shadow-md text-sm sm:text-base transition transform hover:scale-105">
                     <i class="bi bi-speedometer2 me-2"></i> Masuk ke Dashboard
                 </a>
-
-                <a href="{{ route('login') }}"
-                    class="border border-sky-600 text-sky-700 hover:bg-sky-600 hover:text-white px-6 py-3 rounded-lg shadow-md text-sm sm:text-base transition transform hover:scale-105">
-                    <i class="bi bi-box-arrow-in-right me-2"></i> Login Admin
-                </a>
             </div>
         </div>
 

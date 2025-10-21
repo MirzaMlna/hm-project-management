@@ -16,7 +16,5 @@ class WorkerPresenceSchedule extends Model
         'first_check_in_end',
         'second_check_in_start',
         'second_check_in_end',
-        'check_out_start',
-        'check_out_end',
     ];
 }

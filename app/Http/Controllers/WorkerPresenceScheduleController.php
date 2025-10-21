@@ -27,8 +27,6 @@ class WorkerPresenceScheduleController extends Controller
                 'first_check_in_end',
                 'second_check_in_start',
                 'second_check_in_end',
-                'check_out_start',
-                'check_out_end'
             ]));
             $message = 'Jadwal absensi berhasil diperbarui.';
         } else {
@@ -37,8 +35,6 @@ class WorkerPresenceScheduleController extends Controller
                 'first_check_in_end',
                 'second_check_in_start',
                 'second_check_in_end',
-                'check_out_start',
-                'check_out_end'
             ]));
             $message = 'Jadwal absensi berhasil disimpan.';
         }
@@ -53,8 +49,6 @@ class WorkerPresenceScheduleController extends Controller
             'first_check_in_end'    => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after:first_check_in_start'],
             'second_check_in_start' => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after_or_equal:first_check_in_end'],
             'second_check_in_end'   => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after:second_check_in_start'],
-            'check_out_start'       => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after_or_equal:second_check_in_end'],
-            'check_out_end'         => ['required', 'regex:/^\d{2}:\d{2}(:\d{2})?$/', 'after:check_out_start'],
         ];
 
         $messages = [

@@ -15,9 +15,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UserSeeder::class);
-        $this->call(WorkerPresenceScheduleSeeder::class);
-        $this->call(WorkerPresenceSeeder::class);
-        WorkerPresenceSchedule::factory()->create();
 
         // $categories = ['Tukang Jawa', 'Tukang Banjar'];
         // foreach ($categories as $category) {

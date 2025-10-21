@@ -13,8 +13,6 @@ return new class extends Migration {
             $table->time('first_check_in_end')->default('08:00:00');
             $table->time('second_check_in_start')->default('13:00:00');
             $table->time('second_check_in_end')->default('14:00:00');
-            $table->time('check_out_start')->default('17:00:00');
-            $table->time('check_out_end')->default('18:00:00');
             $table->timestamps();
         });
     }
