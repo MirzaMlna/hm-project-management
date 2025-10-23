@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\WorkerPresenceExport;
 use App\Exports\WorkerPresencePerCategoryExport;
 use App\Models\Worker;
 use App\Models\WorkerCategory;
@@ -15,17 +14,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class WorkerPresenceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $worker_presence_schedules = WorkerPresenceSchedule::first();
 
-        // Tanggal yang ingin dilihat (default hari ini)
+        // Tanggal default = hari ini
         $date = $request->get('date', Carbon::today()->toDateString());
 
-        // Ambil presensi untuk tanggal tersebut beserta relasi worker -> category
         $presences = WorkerPresence::with(['worker.category'])
             ->whereDate('date', $date)
             ->orderBy('id')
@@ -33,18 +28,13 @@ class WorkerPresenceController extends Controller
 
         $categories = WorkerCategory::orderBy('category')->get();
 
-        // Hitung jumlah tukang aktif
         $totalWorkers = Worker::where('is_active', true)->count();
 
-        // Hitung tukang aktif yang sudah absen (distinct supaya tidak double)
         $presentWorkers = WorkerPresence::whereDate('date', $date)
-            ->whereHas('worker', function ($q) {
-                $q->where('is_active', true);
-            })
+            ->whereHas('worker', fn($q) => $q->where('is_active', true))
             ->distinct('worker_id')
             ->count('worker_id');
 
-        // Tukang aktif yang belum absen
         $notPresentCount = $totalWorkers - $presentWorkers;
 
         return view('worker-presences.index', compact(
@@ -55,50 +45,6 @@ class WorkerPresenceController extends Controller
         ));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $workerPresence = WorkerPresence::findOrFail($id);
@@ -124,16 +70,13 @@ class WorkerPresenceController extends Controller
         return response()->json([
             'status' => 'success',
             'worker' => [
-                'photo' => $worker->photo
-                    ? asset('storage/' . $worker->photo)
-                    : null,
+                'photo' => $worker->photo ? asset('storage/' . $worker->photo) : null,
                 'name'     => $worker->name,
                 'code'     => $worker->code,
                 'category' => $worker->category->category ?? '-'
             ]
         ]);
     }
-
 
     public function verify($hashId)
     {
@@ -166,35 +109,16 @@ class WorkerPresenceController extends Controller
         $firstEnd    = Carbon::parse($schedule->first_check_in_end);
         $secondStart = Carbon::parse($schedule->second_check_in_start);
         $secondEnd   = Carbon::parse($schedule->second_check_in_end);
-        $outStart    = Carbon::parse($schedule->check_out_start);
-        $outEnd      = Carbon::parse($schedule->check_out_end);
 
         // FIRST CHECK IN
         if (is_null($presence->first_check_in)) {
-            // Jika lebih awal (2 jam sebelum sampai tepat saat jam mulai)
-            if ($now->between($firstStart->copy()->subHours(2), $firstStart)) {
-                $presence->first_check_in  = $now;
-                $presence->is_work_earlier = true;
+            if ($now->between($firstStart->copy()->subHours(2), $firstEnd)) {
+                $presence->first_check_in = $now;
                 $presence->save();
 
                 return response()->json([
                     'status'  => 'success',
-                    'message' => 'Presensi ke-1 (Lebih Awal)',
-                    'worker'  => [
-                        'name'     => $worker->name,
-                        'code'     => $worker->code,
-                        'category' => $worker->category->category ?? '-'
-                    ]
-                ]);
-            }
-            if ($now->between($firstStart, $firstEnd)) {
-                $presence->first_check_in  = $now;
-                $presence->is_work_earlier = false;
-                $presence->save();
-
-                return response()->json([
-                    'status'  => 'success',
-                    'message' => 'Presensi ke-1 (Tepat Waktu)',
+                    'message' => 'Presensi ke-1 Berhasil',
                     'worker'  => [
                         'name'     => $worker->name,
                         'code'     => $worker->code,
@@ -203,72 +127,64 @@ class WorkerPresenceController extends Controller
                 ]);
             }
         }
-
 
         // SECOND CHECK IN
         if (is_null($presence->second_check_in)) {
             if ($now->between($secondStart, $secondEnd)) {
                 $presence->second_check_in = $now;
                 $presence->save();
+
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Presensi ke-2',
-                    'worker' => [
-                        'photo' => $worker->photo,
-                        'name' => $worker->name,
-                        'code' => $worker->code,
+                    'status'  => 'success',
+                    'message' => 'Presensi ke-2 Berhasil',
+                    'worker'  => [
+                        'photo'    => $worker->photo,
+                        'name'     => $worker->name,
+                        'code'     => $worker->code,
                         'category' => $worker->category->category ?? '-'
                     ]
                 ]);
             }
         }
 
-        // CHECK OUT
-        // CHECK OUT
-        if (is_null($presence->check_out)) {
-            if ($now->lt($outStart)) {
-                return response()->json(['status' => 'error', 'message' => 'Belum waktunya']);
-            }
-
-            $presence->check_out = $now;
-
-            if ($now->between($outStart, $outEnd)) {
-                $presence->is_work_longer = false;
-                $presence->is_overtime = false;
-            } elseif ($now->between($outEnd->copy()->addMinute(), $outEnd->copy()->addHours(2))) {
-                $presence->is_work_longer = true;
-                $presence->is_overtime = false;
-            } elseif ($now->gte($outEnd->copy()->addHours(2))) {
-                $presence->is_work_longer = false;
-                $presence->is_overtime = true;
-
-                // paksa flag lain ke false
-                $presence->is_work_earlier = false;
-                $presence->is_work_longer  = false;
-            }
-
+        // Jika ingin menambahkan kerja lebih lama (manual / otomatis)
+        if ($presence->second_check_in && !$now->between($secondStart, $secondEnd)) {
+            // contoh logika: kerja lebih lama dihitung per jam
+            $presence->work_longer_count += 1; // atau sesuai hitungan kamu
             $presence->save();
+
             return response()->json([
-                'status' => 'success',
-                'message' => 'Presensi Pulang',
-                'worker' => [
-                    'name' => $worker->name,
-                    'code' => $worker->code,
-                    'category' => $worker->category->category ?? '-',
-                    'daily_salary' => $worker->daily_salary->daily_salary ?? '-'
+                'status'  => 'success',
+                'message' => 'Durasi kerja tambahan dicatat (+1)',
+                'worker'  => [
+                    'name'     => $worker->name,
+                    'code'     => $worker->code,
+                    'category' => $worker->category->category ?? '-'
                 ]
             ]);
         }
 
-
         return response()->json(['status' => 'info', 'message' => 'Semua presensi untuk hari ini sudah tercatat.']);
     }
+
+    public function update(Request $request, string $id)
+    {
+        $presence = WorkerPresence::findOrFail($id);
+
+        $presence->update([
+            'work_longer_count' => $request->input('work_longer_count', 0),
+            'is_overtime' => $request->has('is_overtime'),
+        ]);
+
+        return redirect()->back()->with('success', 'Data presensi berhasil diperbarui.');
+    }
+
 
     public function exportExcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date_from'   => 'required|date',
-            'date_to'     => 'required|date|after_or_equal:date_from',
+            'date_from' => 'required|date',
+            'date_to'   => 'required|date|after_or_equal:date_from',
         ]);
 
         if ($validator->fails()) {
@@ -286,7 +202,7 @@ class WorkerPresenceController extends Controller
         $period = [];
         $d = $start->copy();
         while ($d->lte($end)) {
-            $period[] = $d->toDateString(); // yyyy-mm-dd
+            $period[] = $d->toDateString();
             $d->addDay();
         }
 

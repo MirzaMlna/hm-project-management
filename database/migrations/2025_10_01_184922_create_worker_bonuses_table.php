@@ -1,10 +1,27 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Model;
-
-class WorkerBonus extends Model
+return new class extends Migration
 {
-    protected $fillable = ['work_longer'];
-}
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('worker_bonuses', function (Blueprint $table) {
+            $table->id();
+            $table->integer('work_longer')->default(0);    // Bonus kerja lebih lama
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('worker_bonuses');
+    }
+};

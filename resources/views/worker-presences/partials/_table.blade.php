@@ -3,9 +3,9 @@
     <div class="flex flex-wrap justify-between items-end gap-3 mb-4">
         <form method="GET" action="{{ route('worker-presences.index') }}" class="flex flex-wrap items-end gap-3">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+                <label class="block text-xs font-medium text-gray-700">Tanggal</label>
                 <input type="date" name="date" value="{{ request('date', \Carbon\Carbon::today()->toDateString()) }}"
-                    class="mt-1 block w-full rounded border-gray-300 focus:border-sky-500 focus:ring-sky-500 text-sm">
+                    class="mt-1 block w-full rounded border-gray-300 focus:border-sky-500 focus:ring-sky-500 text-xs">
             </div>
             <button type="submit"
                 class="px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700 transition flex items-center gap-2">
@@ -21,7 +21,7 @@
 
     {{-- Tabel --}}
     <div class="overflow-x-auto border border-gray-200 rounded-lg">
-        <table class="min-w-full text-sm">
+        <table class="min-w-full text-xs">
             <thead class="bg-sky-800 text-white">
                 <tr>
                     <th class="p-2 text-start">No</th>
@@ -30,7 +30,8 @@
                     <th class="p-2 text-start">Kode</th>
                     <th class="p-2 text-start">Presensi 1</th>
                     <th class="p-2 text-start">Presensi 2</th>
-                    <th class="p-2 text-start">Presensi Pulang</th>
+                    <th class="p-2 text-start">Jam Lembur</th>
+                    <th class="p-2 text-start">Lembur Malam</th>
                     <th class="p-2 text-start">Aksi</th>
                 </tr>
             </thead>
@@ -45,12 +46,7 @@
                         {{-- Presensi 1 --}}
                         <td class="p-2">
                             @if ($presence->first_check_in)
-                                <span class="font-bold text-sky-700 text-lg">
-                                    {{ \Carbon\Carbon::parse($presence->first_check_in)->format('H:i') }}
-                                </span><br>
-                                <span class="text-xs text-gray-600">
-                                    {{ $presence->is_work_earlier ? 'Lebih Awal' : 'Tepat Waktu' }}
-                                </span>
+                                ✅
                             @else
                                 <span class="text-gray-400">-</span>
                             @endif
@@ -59,35 +55,42 @@
                         {{-- Presensi 2 --}}
                         <td class="p-2">
                             @if ($presence->second_check_in)
-                                <span class="font-bold text-green-700 text-lg">
-                                    {{ \Carbon\Carbon::parse($presence->second_check_in)->format('H:i') }}
-                                </span><br>
-                                <span class="text-xs text-gray-600">Tepat Waktu</span>
+                                ✅
                             @else
                                 <span class="text-gray-400">-</span>
                             @endif
                         </td>
 
-                        {{-- Presensi Pulang --}}
+                        {{-- Jam Lembur --}}
                         <td class="p-2">
-                            @if ($presence->check_out)
-                                <span class="font-bold text-amber-700 text-lg">
-                                    {{ \Carbon\Carbon::parse($presence->check_out)->format('H:i') }}
-                                </span><br>
-                                <span class="text-xs text-gray-600">
-                                    @if ($presence->is_overtime)
-                                        Lembur
-                                    @elseif($presence->is_work_longer)
-                                        Pulang Lambat
-                                    @else
-                                        Tepat Waktu
-                                    @endif
-                                </span>
-                            @else
-                                <span class="text-gray-400">-</span>
-                            @endif
+                            <form action="{{ route('worker-presences.update', $presence->id) }}" method="POST"
+                                class="flex items-center gap-2">
+                                @csrf
+                                @method('PUT')
+                                <input type="number" name="work_longer_count"
+                                    value="{{ old('work_longer_count', $presence->work_longer_count) }}"
+                                    class="w-10 border rounded p-1 text-center focus:ring focus:ring-sky-200 text-xs">
+                                <button type="submit" class="text-sky-700 hover:text-sky-900">
+                                    <i class="bi bi-save"></i>
+                                </button>
+                            </form>
                         </td>
 
+                        {{-- Lembur Malam --}}
+                        <td class="p-2 text-center">
+                            <form action="{{ route('worker-presences.update', $presence->id) }}" method="POST"
+                                class="flex justify-center items-center">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="work_longer_count"
+                                    value="{{ $presence->work_longer_count }}">
+                                <input type="checkbox" name="is_overtime" value="1"
+                                    {{ $presence->is_overtime ? 'checked' : '' }} onchange="this.form.submit()"
+                                    class="rounded border-gray-300 text-sky-600 focus:ring-sky-500 w-5 h-5 cursor-pointer">
+                            </form>
+                        </td>
+
+                        {{-- Hapus --}}
                         <td class="p-2 text-center">
                             <form action="{{ route('worker-presences.destroy', $presence->id) }}" method="POST"
                                 onsubmit="return confirm('Yakin ingin menghapus presensi ini?')">
@@ -101,13 +104,14 @@
 
                 @empty
                     <tr>
-                        <td colspan="8" class="p-4 text-gray-500 text-center">
+                        <td colspan="9" class="p-4 text-gray-500 text-center">
                             Belum ada presensi hari ini.
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+
         <div class="p-3">
             {{ $presences->links() }}
         </div>

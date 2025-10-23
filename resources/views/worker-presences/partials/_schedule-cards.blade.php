@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
     @php
         $cards = [
             [
@@ -12,12 +12,6 @@
                 'color' => 'green',
                 'start' => $worker_presence_schedules->second_check_in_start,
                 'end' => $worker_presence_schedules->second_check_in_end,
-            ],
-            [
-                'label' => 'Presensi Pulang',
-                'color' => 'amber',
-                'start' => $worker_presence_schedules->check_out_start,
-                'end' => $worker_presence_schedules->check_out_end,
             ],
         ];
     @endphp
