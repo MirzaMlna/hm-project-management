@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WorkerBonusController;
 use App\Http\Controllers\WorkerCategoryController;
 use App\Http\Controllers\WorkerController;
+use App\Http\Controllers\WorkerPresenceClickController;
 use App\Http\Controllers\WorkerPresenceController;
 use App\Http\Controllers\WorkerPresenceScheduleController;
 use App\Models\Item;
@@ -52,7 +53,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/presences/export', [WorkerPresenceController::class, 'exportExcel'])->name('worker-presences.export');
     Route::get('/presences/preview/{hashId}', [WorkerPresenceController::class, 'preview'])
         ->name('worker-presences.preview');
-
+    // Worker Presence (Click)
+    Route::get('worker-presences-click', [WorkerPresenceClickController::class, 'index'])->name('worker-presences-click.index');
+    Route::post('worker-presences-click/save-all', [WorkerPresenceClickController::class, 'saveAll'])->name('worker-presences-click.save-all');
+    Route::post('worker-presences-click/export', [WorkerPresenceClickController::class, 'exportExcel'])
+        ->name('worker-presences-click.export');
     // Worker Bonus
     Route::resource('worker-bonuses', WorkerBonusController::class);
 

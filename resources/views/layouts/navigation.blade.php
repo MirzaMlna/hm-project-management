@@ -44,6 +44,9 @@
                                 <x-dropdown-link :href="route('worker-presences.index')">
                                     <i class="bi bi-qr-code-scan me-2"></i> Scan QR Presensi
                                 </x-dropdown-link>
+                                <x-dropdown-link :href="route('worker-presences-click.index')">
+                                    <i class="bi bi-qr-code-scan me-2"></i> Presensi Klik
+                                </x-dropdown-link>
                             </x-slot>
                         </x-dropdown>
                         <x-dropdown align="right" width="48">
